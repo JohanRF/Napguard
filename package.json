@@ -16,9 +16,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "src/assets/images/napguard.ico",
-      "signingHashAlgorithms": ["sha256"],
-      "certificateSubjectName": "NapGuard"
+      "icon": "src/assets/images/napguard.ico"
     },
     "files": [
       "main.js",
