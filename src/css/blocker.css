@@ -1,0 +1,66 @@
+/* ==============================
+    RESET BASE
+============================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ==============================
+    BODY — cubre todo el monitor
+============================== */
+body {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: all; /* ← permite ver el cursor */
+    user-select: none;
+    overflow: hidden;
+    cursor: not-allowed; /* ← muestra el símbolo prohibido */
+}
+
+/* Pero el documento sí escucha el teclado */
+html {
+    pointer-events: all;
+}
+
+/* ==============================
+    CONTENEDOR — imagen + tiempo
+    El tiempo flota sobre la imagen
+============================== */
+.blockerCenter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==============================
+    IMAGEN DEL ANIMAL — grande
+============================== */
+.animalImg {
+    width: 50vw;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto; /* centra horizontalmente */
+}
+
+/* ==============================
+    TIEMPO — esquina inferior
+    derecha encima de la imagen
+============================== */
+.tiempoDescanso {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 5rem;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    letter-spacing: 2px;
+}

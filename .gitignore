@@ -1,0 +1,18 @@
+# Dependencias — se reinstalan con npm install
+node_modules/
+
+# Carpeta de build — se regenera con npm run build
+dist/
+
+# Archivos de sistema Windows
+Thumbs.db
+desktop.ini
+
+# Archivos de sistema Mac
+.DS_Store
+
+# Logs de npm
+npm-debug.log*
+
+# Variables de entorno
+.env

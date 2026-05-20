@@ -1,0 +1,382 @@
+/* ==============================
+    FUENTES E IMPORTACIONES
+============================== */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* ==============================
+    VARIABLES GLOBALES
+    Colores modo claro por defecto
+============================== */
+:root {
+    --bg: #f5ede0;
+    --bgSecundario: #e8d5b7;
+    --borde: #d4b896;
+    --texto: #5a3e28;
+    --textoSecundario: #8a6a4a;
+    --acento: #c0623a;
+    --acentoOscuro: #8a3a20;
+    --sliderTrack: #a08060;
+}
+
+/* Variables modo oscuro */
+body.dark {
+    --bg: #1e1a14;
+    --bgSecundario: #2a2318;
+    --borde: #3a3020;
+    --texto: #c4a070;
+    --textoSecundario: #7a6040;
+    --acento: #e0824a;
+    --acentoOscuro: #b05a28;
+    --sliderTrack: #5a4030;
+}
+
+/* ==============================
+    RESET Y BASE
+============================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', monospace;
+    background: var(--bg);
+    color: var(--texto);
+    transition: background 0.3s, color 0.3s;
+    overflow: hidden;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+/* ==============================
+    UTILIDAD
+============================== */
+.oculto {
+    display: none;
+}
+
+/* ==============================
+    BARRA SUPERIOR
+============================== */
+.topBar {
+    background: var(--bgSecundario);
+    border-bottom: 2px solid var(--borde);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.appName {
+    font-size: 9px;
+    color: var(--texto);
+}
+
+.accent {
+    color: var(--acento);
+}
+
+.topBar button {
+    width: 28px;
+    height: 28px;
+    background: var(--borde);
+    border: 1.5px solid var(--acentoOscuro);
+    border-radius: 6px;
+    color: var(--texto);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+/* ==============================
+    VISTA SETTINGS
+============================== */
+.settingsBody {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sectionTitle {
+    font-size: 7px;
+    color: var(--textoSecundario);
+    letter-spacing: 0.1em;
+    margin: 8px 0 6px;
+}
+
+/* Bloque de cada parámetro */
+.paramBlock {
+    margin-bottom: 10px;
+}
+
+.paramRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.paramName {
+    font-size: 7px;
+    color: var(--texto);
+}
+
+/* Input numérico sincronizado con slider */
+.paramVal {
+    font-size: 8px;
+    color: var(--acento);
+    background: var(--bgSecundario);
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    padding: 2px 6px;
+    width: 52px;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* Slider */
+input[type="range"] {
+    -webkit-appearance: none;
+	appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--sliderTrack);
+    border-radius: 2px;
+    border: 1px solid var(--acentoOscuro);
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--acento);
+    border: 2px solid var(--acentoOscuro);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Caja total calculado */
+.totalBox {
+    background: var(--bgSecundario);
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    margin: 8px 0;
+}
+
+.totalLabel {
+    font-size: 6px;
+    color: var(--textoSecundario);
+    margin-bottom: 4px;
+}
+
+.totalVal {
+    font-size: 9px;
+    color: var(--acento);
+}
+
+/* Selección de personaje */
+.personajesGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+}
+
+.personajeOpt {
+    background: var(--bgSecundario);
+    border: 1.5px solid var(--borde);
+    border-radius: 7px;
+    padding: 10px 12px;
+    font-size: 7px;
+    color: var(--texto);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.personajeOpt.selected {
+    border-color: var(--acento);
+    color: var(--acento);
+    background: var(--bg);
+}
+
+.radioDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    border: 1.5px solid var(--borde);
+    flex-shrink: 0;
+}
+
+.radioDot.filled {
+    background: var(--acento);
+    border-color: var(--acentoOscuro);
+}
+
+/* Botón empezar */
+#btnEmpezar {
+    width: 100%;
+    background: var(--acento);
+    border: 2px solid var(--acentoOscuro);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 10px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+}
+
+/* ==============================
+    VISTA TIMER
+============================== */
+.timerBody {
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Badge de estado */
+.estadoBadge {
+    font-size: 7px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: var(--bgSecundario);
+    border: 1px solid var(--borde);
+    color: var(--texto);
+}
+
+/* Reloj circular */
+.clockWrap {
+    position: relative;
+    width: 180px;
+    height: 180px;
+}
+
+.clockWrap svg {
+    width: 180px;
+    height: 180px;
+    transform: rotate(-90deg);
+}
+
+.ringBg {
+    fill: none;
+    stroke: var(--borde);
+    stroke-width: 7;
+}
+.ringBg, .ringProgress {
+    stroke-width: 8;
+}
+
+.ringProgress {
+    fill: none;
+    stroke: var(--acento);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-dasharray: 502.6;
+    stroke-dashoffset: 502.6;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.clockDot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--acento);
+}
+
+/* Ciclos */
+.ciclosRow {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.cicloCuadrado {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--borde);
+    border: 1px solid var(--textoSecundario);
+}
+
+.cicloCuadrado.done {
+    background: var(--acento);
+    border-color: var(--acentoOscuro);
+}
+
+/* Etiqueta sesión total */
+.sesionTag {
+    font-size: 8px;
+    color: var(--textoSecundario);
+    background: var(--bgSecundario);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    padding: 5px 10px;
+    text-align: center;
+}
+
+/* Controles */
+.controlesRow {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+    gap: 12px;
+    width: 100%;
+}
+
+.controlesRow button {
+    background: var(--bgSecundario);
+    border: 1.5px solid var(--borde);
+    border-radius: 7px;
+    color: var(--texto);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background 0.2s;
+}
+
+#btnSettings {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+#btnIniciar {
+    flex: 1;
+    background: var(--acento);
+    border-color: var(--acentoOscuro);
+    color: #fff;
+}
+
+#btnPausar {
+    flex: 1;
+}

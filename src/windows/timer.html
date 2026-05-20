@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>NapGuard</title>
+	<link rel="stylesheet" href="../css/timer.css">
+	<script src="https://kit.fontawesome.com/4e26a4ebf9.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    
+	<!-- =============================
+        VISTA 1: SETTINGS
+        Primera pantalla al abrir la app
+    ============================== -->
+	<div id="vistaSettings">
+		<!--? Barra superior -->
+		<div class="topBar">
+			<span class="appName">Nap<span class="accent">Guard</span></span>
+			<button id="btnModo" title="Cambiar modo claro/oscuro">
+				<i id="iconoModo" class="fa-regular fa-moon"></i>
+			</button>
+		</div>
+
+		<!-- ? Cuerpo del settings -->
+		<div class="settingsBody">
+
+			<!-- Seccion tiempos -->
+			<p class="sectionTitle">// TIEMPOS //</p>
+
+			<div class="paramBlock">
+				<div class="paramRow">
+					<span class="paramName">CONCENTRACIÓN</span>
+					<input type="number" class="paramVal" id="valConcentracion" value="30" min="1" max="120">
+				</div>
+				<input type="range" id="sliderConcentracion" min="1" max="120" value="30" step="1">
+			</div>
+
+			<div class="paramBlock">
+				<div class="paramRow">
+					<span class="paramName">DESCANSO</span>
+					<input type="number" class="paramVal" id="valDescanso" value="5" min="1" max="60">
+				</div>
+				<input type="range" id="sliderDescanso" min="1" max="60" value="5" step="1">
+			</div>
+
+			<div class="paramBlock">
+                <div class="paramRow">
+                    <span class="paramName">CICLOS</span>
+                    <input type="number" class="paramVal" id="valCiclos" value="4" min="1" max="10">
+                </div>
+                <input type="range" id="sliderCiclos" min="1" max="10" value="4" step="1">
+            </div>
+
+			<!-- Total calculado -->
+            <div class="totalBox">
+                <p class="totalLabel">SESIÓN TOTAL</p>
+                <p class="totalVal" id="totalSesion">2h 20min (140 min)</p>
+            </div>
+
+			<!-- Selección de personaje -->
+            <p class="sectionTitle">// PERSONAJE EN DESCANSO //</p>
+
+            <div class="personajesGrid">
+                <div class="personajeOpt selected" data-personaje="gato">
+                    <span class="radioDot filled"></span>
+                    Gato
+                </div>
+                <div class="personajeOpt" data-personaje="perro">
+                    <span class="radioDot"></span>
+                    Perro
+                </div>
+                <div class="personajeOpt" data-personaje="capibara">
+                    <span class="radioDot"></span>
+                    Capibara
+                </div>
+            </div>
+
+			<!-- Botón empezar -->
+            <button id="btnEmpezar">
+				EMPEZAR <i class="fa-solid fa-play"></i>
+			</button>
+		</div>
+	</div>
+
+	<!-- =============================
+        VISTA 2: TIMER
+        Se muestra al presionar Empezar
+    ============================== -->
+	<div id="vistaTimer" class="oculto">
+
+		<!-- Barra superior -->
+		<div class="topBar">
+			<span class="appName">Nap<span class="accent">Guard</span></span>
+			<button id="btnModo2" title="Cambiar modo claro/oscuro">
+				<i id="iconoModo2" class="fa-regular fa-moon"></i>
+			</button>
+		</div>
+
+		<!-- Cuerpo del timer -->
+		<div class="timerBody">
+
+			<!-- Estado actual -->
+			<span id="estadoActual" class="estadoBadge">Concentración</span>
+
+			<!-- Reloj circular -->
+			<div class="clockWrap">
+				<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Círculo de fondo -->
+                    <circle class="ringBg" cx="90" cy="90" r="80"/>
+                    <!-- Círculo de progreso -->
+                    <circle class="ringProgress" id="ringProgress" cx="90" cy="90" r="80"/>
+                </svg>
+				<!-- Punto central -->
+                <div class="clockDot"></div>
+			</div>
+
+			<!-- Indicador de ciclos -->
+			<div class="ciclosRow" id="ciclosRow">
+				<!-- Los cuadraditos se generan en JS según los ciclos configurados -->
+			</div>
+
+			<!-- Total de sesión -->
+			<div class="sesionTag" id="sesionTag">
+				Sesión total: 2h 30min (150min)
+			</div>
+
+			<!-- Controles -->
+			<div class="controlesRow">
+				<button id="btnIniciarPausar">
+					<i class="fa-solid fa-play"></i> INICIAR
+				</button>
+				<button id="btnSettings">VOLVER</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- BOTÓN TEMPORAL DE TEST — borrar después -->
+	<button onclick="terminarCiclo()" style="position:fixed; bottom:10px; right:10px; z-index:9999; background:red; color:white; padding:8px; font-size:10px; border:none; cursor:pointer;">
+		TEST SKIP
+	</button>
+
+	<script src="../js/timer.js"></script>
+</body>
+</html>

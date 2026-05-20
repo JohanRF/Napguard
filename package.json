@@ -1,0 +1,34 @@
+{
+  "name": "napguard",
+  "version": "1.0.0",
+  "description": "App de concentración con timer Pomodoro",
+  "main": "main.js",
+  "author": "Johan Rivera",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.napguard.app",
+    "productName": "NapGuard",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/assets/images/napguard.ico",
+      "signingHashAlgorithms": ["sha256"],
+      "certificateSubjectName": "NapGuard"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "config/**/*"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^42.0.1",
+    "electron-builder": "^25.0.0"
+  }
+}
