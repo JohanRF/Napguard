@@ -17,12 +17,23 @@
 		<!--? Barra superior -->
 		<div class="topBar">
 			<span class="appName">Nap<span class="accent">Guard</span></span>
+
+			<button id="btnSkip" style="background: red; color: white; border: none; border-radius: 7px; font-family: 'Press Start 2P', monospace; font-size: 7px; padding: 8px; cursor: pointer;">
+				SKIP
+			</button>
+
 			<button id="btnModo" title="Cambiar modo claro/oscuro">
 				<i id="iconoModo" class="fa-regular fa-moon"></i>
 			</button>
 		</div>
 
 		<!-- ? Cuerpo del settings -->
+		<!-- Total calculado -->
+        <div class="totalBox">
+            <p class="totalLabel">SESIÓN TOTAL</p>
+            <p class="totalVal" id="totalSesion">2h 20min (140 min)</p>
+        </div>
+		
 		<div class="settingsBody">
 
 			<!-- Seccion tiempos -->
@@ -52,36 +63,99 @@
                 <input type="range" id="sliderCiclos" min="1" max="10" value="4" step="1">
             </div>
 
-			<!-- Total calculado -->
-            <div class="totalBox">
-                <p class="totalLabel">SESIÓN TOTAL</p>
-                <p class="totalVal" id="totalSesion">2h 20min (140 min)</p>
-            </div>
+			<!-- Diseño de descanso -->
+			<p class="sectionTitle">// DISEÑO DE DESCANSO //</p>
 
-			<!-- Selección de personaje -->
-            <p class="sectionTitle">// PERSONAJE EN DESCANSO //</p>
+			<!-- TABS — siempre visibles -->
+			<div class="tabsRow">
+				<button class="tabBtn active" id="tabImagenes">Imágenes</button>
+				<button class="tabBtn" id="tabGif">GIF/Sticker</button>
+				<button class="tabBtn" id="tabCustom">Custom</button>
+			</div>
 
-            <div class="personajesGrid">
-                <div class="personajeOpt selected" data-personaje="gato">
-                    <span class="radioDot filled"></span>
-                    Gato
-                </div>
-                <div class="personajeOpt" data-personaje="perro">
-                    <span class="radioDot"></span>
-                    Perro
-                </div>
-                <div class="personajeOpt" data-personaje="capibara">
-                    <span class="radioDot"></span>
-                    Capibara
-                </div>
-            </div>
+			<!-- CONTENIDO TAB: Imágenes -->
+			<div id="panelImagenes" class="tabPanel">
 
-			<!-- Botón empezar -->
-            <button id="btnEmpezar">
-				EMPEZAR <i class="fa-solid fa-play"></i>
-			</button>
+				<!-- Vista A — lista de categorías -->
+				<div id="vistaCategorias">
+					<div class="categoriaOpt" data-categoria="animales">
+						<i class="fa-solid fa-paw"></i>
+						<span>Animales</span>
+						<i class="fa-solid fa-chevron-right"></i>
+					</div>
+					<div class="categoriaOpt" data-categoria="anime">
+						<i class="fa-solid fa-star"></i>
+						<span>Anime</span>
+						<i class="fa-solid fa-chevron-right"></i>
+					</div>
+					<div class="categoriaOpt" data-categoria="futbol">
+						<i class="fa-solid fa-futbol"></i>
+						<span>Fútbol</span>
+						<i class="fa-solid fa-chevron-right"></i>
+					</div>
+				</div>
+
+				<!-- Vista B — imágenes de la categoría seleccionada -->
+				<div id="vistaImagenesCat" class="oculto">
+					<div class="contenidoHeader">
+						<button id="btnVolverCategorias">
+							<i class="fa-solid fa-arrow-left"></i>
+						</button>
+						<span id="tituloCategoriaActual">Animales</span>
+					</div>
+					<div class="imagenesGrid" id="imagenesGrid">
+						<!-- Se generan con JS según la categoría -->
+					</div>
+				</div>
+
+			</div>
+
+			<!-- CONTENIDO TAB: GIF/Sticker -->
+			<div id="panelGif" class="tabPanel oculto">
+				
+				<!-- Buscador -->
+				<div class="gifSearchWrap">
+					<i class="fa-solid fa-magnifying-glass"></i>
+					<input type="text" id="inputBuscarGif" placeholder="Buscar...">
+				</div>
+
+				<!-- Tabs GIF / Sticker -->
+				<div class="gifTabs">
+					<button class="gifTabBtn active" id="btnTabGif">GIFs</button>
+					<button class="gifTabBtn" id="btnTabSticker">Stickers</button>
+				</div>
+
+				<!-- Grid de resultados -->
+				<div class="gifGrid" id="gifGrid">
+					<div class="gifPlaceholder">
+						<i class="fa-solid fa-magnifying-glass"></i>
+						<span>Escribe algo para buscar</span>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- CONTENIDO TAB: Custom -->
+			<div id="panelCustom" class="tabPanel oculto">
+				<div class="customGrid" id="customGrid">
+					<!-- Imágenes del usuario generadas con JS -->
+				</div>
+			</div>
+
+			<!-- Botón empezar — siempre al fondo -->
+			<div class="btnMainStart">
+				<button id="btnEmpezar">
+					EMPEZAR <i class="fa-solid fa-play"></i>
+				</button>
+			</div>
+
 		</div>
 	</div>
+
+	<!-- =============================
+        VISTA 1.5: TIMER
+        Se muestra al presionar Empezar
+    ============================== -->
 
 	<!-- =============================
         VISTA 2: TIMER
@@ -134,6 +208,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<script src="../js/timer.js"></script>
 </body>
 </html>

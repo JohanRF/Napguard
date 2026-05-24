@@ -4,7 +4,9 @@ const {app, BrowserWindow, ipcMain, Notification} = require('electron')
 const path = require('path')
 //* Permite leer y escribir archivos en el disco
 const fs = require('fs')
-
+//* Carga las variables de entorno del archivo.env
+require('dotenv').config()
+console.log('GIPHY KEY cargada:', process.env.GIPHY_API_KEY)
 //* Referencia a la ventana del blocker
 let blockerWin = null;
 let mainWin = null;
@@ -38,10 +40,10 @@ function createWindow() {
 
 	//*Nueva ventana con tamaño y configuración definida
 	mainWin = new BrowserWindow({
-		width: 420,
-		height: 560,
+		width: 480,
+		height: 680,
 		autoHideMenuBar:true,
-		resizable:false,
+		resizable: false,
 		webPreferences: {
 			//* Conecto el puente entre main.js y el HTML
 			preload: path.join(__dirname, 'preload.js')
@@ -56,7 +58,7 @@ function createWindow() {
 		callback({
 			responseHeaders:{
 				...details.responseHeaders,
-				'Content-Security-Policy': ["default-src 'self' 'unsafe-inline' https://kit.fontawesome.com https://ka-f.fontawesome.com https://fonts.googleapis.com https://fonts.gstatic.com"]
+				'Content-Security-Policy': ["default-src 'self' 'unsafe-inline' https://kit.fontawesome.com https://ka-f.fontawesome.com https://fonts.googleapis.com https://fonts.gstatic.com https://api.giphy.com https://media.giphy.com https://media0.giphy.com https://media1.giphy.com https://media2.giphy.com https://media3.giphy.com https://media4.giphy.com"]
 			}
 		})
 	})
@@ -146,6 +148,82 @@ ipcMain.handle('cargar-config', () =>{
 		//Si no existe el archivo devuelve la configuracion por defecto
 		return configPorDefecto
 	}
+})
+
+//* Busca GIFs en Giphy desde el proceso principal
+ipcMain.handle('buscar-giphy', async (event, { query, tipo }) => {
+    try {
+        const apiKey = process.env.GIPHY_API_KEY
+        const url = `https://api.giphy.com/v1/${tipo}/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=24&rating=g`
+        const response = await fetch(url)
+        const datos = await response.json()
+        return datos
+    } catch (error) {
+        return null
+    }
+})
+
+//* Devuelve la API key de Giphy al renderer de forma segura
+ipcMain.handle('obtener-giphy-key', ()=>{
+	return process.env.GIPHY_API_KEY 
+})
+
+const { dialog } = require('electron')
+
+// Carpeta donde se guardan las imágenes custom del usuario
+const rutaCustom = path.join(app.getPath('userData'), 'custom-images')
+
+// Crea la carpeta si no existe
+if (!fs.existsSync(rutaCustom)) {
+    fs.mkdirSync(rutaCustom, { recursive: true })
+}
+
+// Abre el explorador de archivos
+ipcMain.handle('seleccionar-imagen-custom', async () => {
+    const resultado = await dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [
+            { name: 'Imágenes', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'] }
+        ]
+    })
+    if (resultado.canceled) return null
+    return resultado.filePaths[0]
+})
+
+// Copia la imagen elegida a la carpeta de datos
+ipcMain.handle('guardar-imagen-custom', async (event, rutaOrigen) => {
+    try {
+        const nombre = `custom-${Date.now()}${path.extname(rutaOrigen)}`
+        const rutaDestino = path.join(rutaCustom, nombre)
+        fs.copyFileSync(rutaOrigen, rutaDestino)
+        return nombre
+    } catch {
+        return null
+    }
+})
+
+// Devuelve la lista de imágenes guardadas
+ipcMain.handle('obtener-imagenes-custom', () => {
+    try {
+        const archivos = fs.readdirSync(rutaCustom)
+        return archivos.map(nombre => ({
+            nombre,
+            ruta: path.join(rutaCustom, nombre)
+        }))
+    } catch {
+        return []
+    }
+})
+
+// Elimina una imagen custom
+ipcMain.handle('eliminar-imagen-custom', (event, nombre) => {
+    try {
+        const ruta = path.join(rutaCustom, nombre)
+        fs.unlinkSync(ruta)
+        return true
+    } catch {
+        return false
+    }
 })
 
 //* Cuando se cierran todas la ventanas, cierra la app

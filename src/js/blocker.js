@@ -15,7 +15,21 @@ window.api.recibirDatosDescanso((datos) => {
 
     // Aplica el animal seleccionado
     const animalImg = document.getElementById('animalImg')
-    animalImg.src = `../assets/images/${datos.personaje}.png`
+    
+    // Detecta el tipo de personaje y asigna la ruta correcta
+    if (!datos.personaje) {
+        // Sin selección — usa el gato por defecto
+        animalImg.src = `../assets/images/gato.png`
+    } else if (datos.personaje.startsWith('http')) {
+        // Es una URL de Giphy — la usa directamente
+        animalImg.src = datos.personaje
+    } else if (datos.personaje.includes('\\') || datos.personaje.includes('/')) {
+        // Es una ruta local de Custom
+        animalImg.src = datos.personaje
+    } else {
+        // Es un nombre de imagen de categoría
+        animalImg.src = `../assets/images/${datos.personaje}.png`
+    }
 
     // Inicia el contador regresivo con el tiempo de descanso
     let segundos = datos.segundos

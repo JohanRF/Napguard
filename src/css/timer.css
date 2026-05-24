@@ -47,13 +47,15 @@ body {
     overflow: hidden;
 }
 
-html, body {
+html,
+body {
     width: 100%;
     max-width: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
 }
+
 /* ==============================
     UTILIDAD
 ============================== */
@@ -102,10 +104,13 @@ html, body {
     VISTA SETTINGS
 ============================== */
 .settingsBody {
-    padding: 14px 16px;
+    padding: 16px 16px 120px 16px;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    height: calc(680px - 44px);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .sectionTitle {
@@ -117,7 +122,7 @@ html, body {
 
 /* Bloque de cada parámetro */
 .paramBlock {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .paramRow {
@@ -125,6 +130,7 @@ html, body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 6px;
+    gap: 16px; 
 }
 
 .paramName {
@@ -148,7 +154,7 @@ html, body {
 /* Slider */
 input[type="range"] {
     -webkit-appearance: none;
-	appearance: none;
+    appearance: none;
     width: 100%;
     height: 4px;
     background: var(--sliderTrack);
@@ -230,6 +236,18 @@ input[type="range"]::-webkit-slider-thumb {
     border-color: var(--acentoOscuro);
 }
 
+/* Padre btnEmpezar */
+.btnMainStart {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    padding: 12px;
+    z-index: 99;
+    border-top: 1px solid var(--borde);
+}
+
 /* Botón empezar */
 #btnEmpezar {
     width: 100%;
@@ -239,10 +257,9 @@ input[type="range"]::-webkit-slider-thumb {
     color: #fff;
     font-family: 'Press Start 2P', monospace;
     font-size: 8px;
-    padding: 10px;
+    padding: 14px;
     cursor: pointer;
     letter-spacing: 0.1em;
-    margin-top: 4px;
 }
 
 /* ==============================
@@ -284,7 +301,9 @@ input[type="range"]::-webkit-slider-thumb {
     stroke: var(--borde);
     stroke-width: 7;
 }
-.ringBg, .ringProgress {
+
+.ringBg,
+.ringProgress {
     stroke-width: 8;
 }
 
@@ -379,4 +398,445 @@ input[type="range"]::-webkit-slider-thumb {
 
 #btnPausar {
     flex: 1;
+}
+
+/* ==============================
+    DISEÑO DE DESCANSO — TABS
+============================== */
+.tabsRow {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.tabBtn {
+    flex: 1;
+    background: var(--bgSecundario);
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    color: var(--textoSecundario);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 8px 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tabBtn.active {
+    background: var(--acento);
+    border-color: var(--acentoOscuro);
+    color: #fff;
+}
+
+/* ==============================
+    PANEL DE CADA TAB
+============================== */
+.tabPanel {
+    margin-bottom: 10px;
+}
+
+/* ==============================
+    CATEGORÍAS — lista
+============================== */
+.categoriaOpt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bgSecundario);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.categoriaOpt:hover {
+    border-color: var(--acento);
+}
+
+.categoriaOpt i:first-child {
+    font-size: 16px;
+    color: var(--acento);
+    width: 20px;
+    text-align: center;
+}
+
+.categoriaOpt span {
+    flex: 1;
+    font-size: 7px;
+    color: var(--texto);
+    font-family: 'Press Start 2P', monospace;
+}
+
+.categoriaOpt i:last-child {
+    font-size: 12px;
+    color: var(--textoSecundario);
+}
+
+/* ==============================
+    HEADER — flecha + título
+============================== */
+.contenidoHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.contenidoHeader button {
+    background: var(--bgSecundario);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--texto);
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+#tituloCategoriaActual {
+    font-size: 8px;
+    color: var(--texto);
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* ==============================
+    IMÁGENES — grid
+============================== */
+.imagenesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.imagenOpt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.imagenOpt img {
+    width: 100%;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 8px;
+    image-rendering: pixelated;
+}
+
+.imagenOpt span {
+    font-size: 6px;
+    color: var(--texto);
+    font-family: 'Press Start 2P', monospace;
+}
+
+.imagenOpt:hover {
+    background: var(--bgSecundario);
+    border-color: var(--borde);
+}
+
+.imagenOpt.selected {
+    border-color: var(--acento);
+    background: var(--bgSecundario);
+}
+
+/* ==============================
+    PRÓXIMAMENTE
+============================== */
+.proximamente {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 2rem;
+    color: var(--textoSecundario);
+}
+
+.proximamente i {
+    font-size: 32px;
+    color: var(--borde);
+}
+
+.proximamente span {
+    font-size: 8px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* ==============================
+    CUSTOM
+============================== */
+.customGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    min-height: 60px;
+}
+
+.btnAgregar {
+    width: 100%;
+    background: var(--bgSecundario);
+    border: 1.5px dashed var(--borde);
+    border-radius: 10px;
+    color: var(--textoSecundario);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: border-color 0.2s, color 0.2s;
+    margin-bottom: 10px;
+}
+
+.btnAgregar:hover {
+    border-color: var(--acento);
+    color: var(--acento);
+}
+
+/* ==============================
+    GIF/STICKER TAB
+============================== */
+.gifSearchWrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bgSecundario);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+
+.gifSearchWrap i {
+    color: var(--textoSecundario);
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+#inputBuscarGif {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--texto);
+    width: 100%;
+}
+
+#inputBuscarGif::placeholder {
+    color: var(--textoSecundario);
+}
+
+.gifTabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.gifTabBtn {
+    flex: 1;
+    background: var(--bgSecundario);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    color: var(--textoSecundario);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.gifTabBtn.active {
+    background: var(--acento);
+    border-color: var(--acentoOscuro);
+    color: #fff;
+}
+
+.gifGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    max-height: 240px;
+    overflow-y: auto;
+    padding-bottom: 40px
+}
+
+.gifItem {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.gifItem:hover {
+    border-color: var(--acento);
+}
+
+.gifItem.selected {
+    border-color: var(--acento);
+}
+
+.gifPlaceholder {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 2rem;
+    color: var(--textoSecundario);
+}
+
+.gifPlaceholder i {
+    font-size: 24px;
+    color: var(--borde);
+}
+
+.gifPlaceholder span {
+    font-size: 7px;
+    font-family: 'Press Start 2P', monospace;
+    text-align: center;
+}
+
+/* ==============================
+    CUSTOM GRID
+============================== */
+#customGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding-bottom: 12px;
+}
+
+.customItem {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: 1.5px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    background: var(--bgSecundario);
+}
+
+.customItem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.customItem.selected {
+    border-color: var(--acento);
+}
+
+.customItem:hover {
+    border-color: var(--borde);
+}
+
+/* Botón +Agregar */
+.customAgregar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1.5px dashed var(--borde);
+    color: var(--textoSecundario);
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.customAgregar:hover {
+    border-color: var(--acento);
+    color: var(--acento);
+}
+
+.customAgregar i {
+    font-size: 20px;
+}
+
+.customAgregar span {
+    font-size: 6px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+/* Botón X para eliminar */
+.customEliminar {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 18px;
+    height: 18px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.2s;
+}
+
+.customEliminar:hover {
+    background: var(--acento);
+}
+
+/* ==============================
+    SCROLLBAR PERSONALIZADO
+============================== */
+
+/* Scroll del settingsBody */
+.settingsBody::-webkit-scrollbar {
+    width: 4px;
+}
+
+.settingsBody::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.settingsBody::-webkit-scrollbar-thumb {
+    background: var(--borde);
+    border-radius: 99px;
+}
+
+.settingsBody::-webkit-scrollbar-thumb:hover {
+    background: var(--acento);
+}
+
+/* Scroll del gifGrid */
+.gifGrid::-webkit-scrollbar {
+    width: 4px;
+}
+
+.gifGrid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.gifGrid::-webkit-scrollbar-thumb {
+    background: var(--borde);
+    border-radius: 99px;
+}
+
+.gifGrid::-webkit-scrollbar-thumb:hover {
+    background: var(--acento);
 }

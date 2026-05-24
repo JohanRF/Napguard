@@ -18,5 +18,23 @@ contextBridge.exposeInMainWorld('api', {
     abrirBlocker: (datos) => ipcRenderer.send('abrir-blocker', datos),
 
 	// Recibe la señal de volver a settings cuando completa todos los ciclos
-	volverASettings: (callback) => ipcRenderer.on('volver-a-settings', () => callback())
+	volverASettings: (callback) => ipcRenderer.on('volver-a-settings', () => callback()),
+
+	//Obtiene la APO key de Giphy de forma segura
+	obtenerGiphyKey: () => ipcRenderer.invoke('obtener-giphy-key'),
+
+	// Busca GIFs desde el proceso principal
+	buscarGiphy: (query, tipo) => ipcRenderer.invoke('buscar-giphy', { query, tipo }),
+
+	// Abre el explorador de archivos para elegir imagen
+	seleccionarImagenCustom: () => ipcRenderer.invoke('seleccionar-imagen-custom'),
+
+	// Guarda una imagen custom copiándola a la carpeta de datos
+	guardarImagenCustom: (rutaOrigen) => ipcRenderer.invoke('guardar-imagen-custom', rutaOrigen),
+
+	// Obtiene la lista de imágenes custom guardadas
+	obtenerImagenesCustom: () => ipcRenderer.invoke('obtener-imagenes-custom'),
+
+	// Elimina una imagen custom
+	eliminarImagenCustom: (nombre) => ipcRenderer.invoke('eliminar-imagen-custom', nombre),
 })

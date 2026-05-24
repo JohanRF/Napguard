@@ -3,7 +3,7 @@
 let concentracion = 30 // min de concentracion
 let descanso = 5 // min de descanso corto
 let ciclosTotales = 4 // cantidad de ciclos totales
-let personaje = 'domesticos'
+let personaje = null // Hasta que el usuario elija.
 let modoOscuro = false // Inicio del modo claro.
 
 //Estado del timer:
@@ -184,27 +184,303 @@ function toggleModo() {
 btnModo.addEventListener('click', toggleModo);
 btnModo2.addEventListener('click', toggleModo);
 
-//? 6. PERSONAJES — selección
-//* Guardar que personaje eligio el usuario
-// Selecciona todos los elementos de opcion de personaje
-const opcionesPersonaje = document.querySelectorAll('.personajeOpt');
+//? 6. DISEÑO DE DESCANSO - navegacion entre casillas
+//* Referencias a los tabs
+const tabImagenes = document.getElementById('tabImagenes')
+const tabGif = document.getElementById('tabGif')
+const tabCustom = document.getElementById('tabCustom')
 
-opcionesPersonaje.forEach(opcion =>{
-	opcion.addEventListener('click', ()=>{
-		//Quita la seleccion de todas las opciones 
-		opcionesPersonaje.forEach(o =>{
-			o.classList.remove('selected');
-			o.querySelector('.radioDot').classList.remove('filled');
+//* Referencias a los paneles
+const panelImagenes = document.getElementById('panelImagenes')
+const panelGif = document.getElementById('panelGif')
+const panelCustom = document.getElementById('panelCustom')
+
+//* Referencias a las vistas de imágenes
+const vistaCategorias = document.getElementById('vistaCategorias')
+const vistaImagenesCat = document.getElementById('vistaImagenesCat')
+const imagenesGrid = document.getElementById('imagenesGrid')
+const tituloCategoriaActual = document.getElementById('tituloCategoriaActual')
+const btnVolverCategorias = document.getElementById('btnVolverCategorias')
+
+const btnAgregarCustom = document.getElementById('btnAgregarCustom');
+
+//* Imágenes por categoría — aquí defines las que tienes
+const imagenesPorCategoria = {
+    animales: [
+		{ nombre: 'Gato', archivo: 'gato.png' },
+		{ nombre: 'Perro', archivo: 'perro.png' },
+		{ nombre: 'Capibara', archivo: 'capibara.png' },
+
+		{ nombre: 'Gato', archivo: 'gato.png' },
+		{ nombre: 'Perro', archivo: 'perro.png' },
+		{ nombre: 'Capibara', archivo: 'capibara.png' },
+		{ nombre: 'Gato', archivo: 'gato.png' },
+		{ nombre: 'Perro', archivo: 'perro.png' },
+		{ nombre: 'Capibara', archivo: 'capibara.png' },
+	],
+    anime: [
+        // Agrega aquí tus imágenes de anime cuando las tengas
+    ],
+    futbol: [
+        // Agrega aquí tus imágenes de fútbol cuando las tengas
+    ]
+}
+
+//* Función para cambiar de tab
+function cambiarTab(tabActivo, panelActivo) {
+    // Quita active de todos los tabs
+    ;[tabImagenes, tabGif, tabCustom].forEach(t => t.classList.remove('active'))
+    // Oculta todos los paneles
+    ;[panelImagenes, panelGif, panelCustom].forEach(p => p.classList.add('oculto'))
+    // Activa el tab y panel seleccionado
+    tabActivo.classList.add('active')
+    panelActivo.classList.remove('oculto')
+}
+
+//* Eventos de los tabs
+tabImagenes.addEventListener('click', () => cambiarTab(tabImagenes, panelImagenes))
+tabGif.addEventListener('click', () => cambiarTab(tabGif, panelGif))
+tabCustom.addEventListener('click', () => cambiarTab(tabCustom, panelCustom))
+
+//* Función para mostrar imágenes de una categoría
+function mostrarCategoria(categoria) {
+    const imagenes = imagenesPorCategoria[categoria] || []
+
+    // Limpia el grid
+    imagenesGrid.innerHTML = ''
+
+    // Si no hay imágenes muestra mensaje
+    if (imagenes.length === 0) {
+        imagenesGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 1rem; font-size: 7px; color: var(--textoSecundario); font-family: 'Press Start 2P', monospace;">
+                Próximamente
+            </div>`
+        return
+    }
+
+    // Genera las imágenes
+    imagenes.forEach(img => {
+        const div = document.createElement('div')
+        div.classList.add('imagenOpt')
+        div.dataset.personaje = img.archivo.replace('.png', '')
+        div.innerHTML = `
+            <img src="../assets/images/${img.archivo}" alt="${img.nombre}">
+            <span>${img.nombre}</span>
+        `
+        // Marca como seleccionada si es la activa
+        if (personaje === img.archivo.replace('.png', '')) {
+            div.classList.add('selected')
+        }
+        // Al hacer clic selecciona el personaje
+        div.addEventListener('click', () => {
+            imagenesGrid.querySelectorAll('.imagenOpt').forEach(o => o.classList.remove('selected'))
+            div.classList.add('selected')
+            personaje = div.dataset.personaje
+        })
+        imagenesGrid.appendChild(div)
+    })
+}
+
+//* Eventos de las categorías
+document.querySelectorAll('.categoriaOpt').forEach(cat => {
+    cat.addEventListener('click', () => {
+        const categoria = cat.dataset.categoria
+        tituloCategoriaActual.textContent = cat.querySelector('span').textContent
+        // Oculta categorías y muestra imágenes
+        vistaCategorias.classList.add('oculto')
+        vistaImagenesCat.classList.remove('oculto')
+        // Carga las imágenes de esa categoría
+        mostrarCategoria(categoria)
+    })
+})
+
+//* Volver a la lista de categorías
+btnVolverCategorias.addEventListener('click', () => {
+    vistaImagenesCat.classList.add('oculto')
+    vistaCategorias.classList.remove('oculto')
+})
+
+//? 6.1 CUSTOM — imágenes del usuario
+// Máximo de imágenes permitidas
+const MAX_CUSTOM = 21
+
+// Carga y muestra las imágenes custom guardadas
+async function cargarImagenesCustom() {
+    const imagenes = await window.api.obtenerImagenesCustom()
+    renderizarCustomGrid(imagenes)
+}
+
+// Renderiza el grid de custom
+function renderizarCustomGrid(imagenes) {
+    const customGrid = document.getElementById('customGrid')
+    customGrid.innerHTML = ''
+
+    // Botón +Agregar — solo si no llegó al límite
+    if (imagenes.length < MAX_CUSTOM) {
+        const btnAgregar = document.createElement('div')
+        btnAgregar.classList.add('customItem', 'customAgregar')
+        btnAgregar.innerHTML = `<i class="fa-solid fa-plus"></i><span>Agregar</span>`
+        btnAgregar.addEventListener('click', async () => {
+            // Abre el explorador de archivos
+            const rutaOrigen = await window.api.seleccionarImagenCustom()
+            if (!rutaOrigen) return
+            // Guarda la imagen
+            const nombre = await window.api.guardarImagenCustom(rutaOrigen)
+            if (!nombre) return
+            // Recarga el grid
+            cargarImagenesCustom()
+        })
+        customGrid.appendChild(btnAgregar)
+    }
+
+    // Muestra cada imagen guardada
+    imagenes.forEach(img => {
+        const div = document.createElement('div')
+        div.classList.add('customItem')
+
+        // Marca como seleccionada si es la activa
+        if (personaje === img.ruta) div.classList.add('selected')
+
+        div.innerHTML = `
+            <img src="${img.ruta}" alt="${img.nombre}">
+            <button class="customEliminar" title="Eliminar">×</button>
+        `
+
+        // Selecciona la imagen al hacer clic
+        div.addEventListener('click', (e) => {
+            // Si hizo clic en la X no selecciona
+            if (e.target.classList.contains('customEliminar')) return
+            customGrid.querySelectorAll('.customItem').forEach(i => i.classList.remove('selected'))
+            div.classList.add('selected')
+            personaje = img.ruta
+        })
+
+        // Elimina la imagen al hacer clic en la X
+        div.querySelector('.customEliminar').addEventListener('click', async () => {
+            await window.api.eliminarImagenCustom(img.nombre)
+            // Si era la seleccionada limpia el personaje
+            if (personaje === img.ruta) personaje = null
+            cargarImagenesCustom()
+        })
+
+        customGrid.appendChild(div)
+    })
+}
+
+// Carga las imágenes al cambiar al tab Custom
+tabCustom.addEventListener('click', () => {
+    cargarImagenesCustom()
+})
+
+
+//? 6.2 GIF/STICKERS - Busqueda con API de Giphy
+//* Referencias
+const inputBuscarGif = document.getElementById('inputBuscarGif');
+const gifGrid = document.getElementById('gifGrid');
+const btnTabGif = document.getElementById('btnTabGif');
+const btnTabSticker = document.getElementById('btnTabSticker');
+
+//* Tipo de busqueda activo - gifs o stickers
+let tipoGif = 'gifs';
+
+//* Cambia entre GIF y Sticker
+btnTabGif.addEventListener('click', ()=>{
+	tipoGif = 'gifs';
+	//Quita active del sticker y lo pone en gif
+	btnTabSticker.classList.remove('active');
+	btnTabGif.classList.add('active');
+
+	//Si hay texto en el buscador relanza la busqueda
+	if(inputBuscarGif.value.trim()) buscarGif(inputBuscarGif.value.trim());
+})
+
+btnTabSticker.addEventListener('click', ()=>{
+	tipoGif = 'stickers';
+	// Quita active del gif y lo pone en sticker
+	btnTabGif.classList.remove('active');
+	btnTabSticker.classList.add('active');
+	// Si hay texto en el buscador relanza la búsqueda
+    if (inputBuscarGif.value.trim()) buscarGif(inputBuscarGif.value.trim());
+})
+
+//* Busca cuando el usuario deja de escribir - espera 600ms
+let timerBusqueda = null;
+inputBuscarGif.addEventListener('input', ()=>{
+	//Cancela la busqueda anterior si el usuario sigue escribiendo
+	clearTimeout(timerBusqueda);
+	const query = inputBuscarGif.value.trim();
+
+	if(!query){
+		//Si borra todo muestra el placeholder
+		gifGrid.innerHTML = `
+			<div class="gifPlaceholder">
+				<i class="fa-solid fa-magnifying-glass"></i>
+				<span>Buscar</span>
+			</div>
+		`;
+		return;
+	}
+
+	//Espera 600ms antes de buscar para no llamar la API en cada letra
+	timerBusqueda = setTimeout(()=> buscarGif(query), 600);
+})
+
+//* Funcion principal de busqueda
+async function buscarGif(query){
+	//Muestra loading mientras carga
+	gifGrid.innerHTML =`
+		<div class="gifPlaceholder">
+			<i class="fa-solid fa-spinner fa-spin"></i>
+			<span>Buscando...</span>	
+		</div>
+	`;
+
+	try{
+		// La búsqueda se hace desde main.js para evitar bloqueos de seguridad
+		const datos = await window.api.buscarGiphy(query, tipoGif)
+
+		//Si no hay resultados
+		if(datos.data.length === 0){
+			gifGrid.innerHTML = `
+				<div class="gifPlaceholder">
+					<i class="fa-solid fa-face-sad-tear"></i>
+					<span>Sin resultados</span>
+				</div>
+			`;
+
+			return;
+		}
+
+		//Limpia el grid y muestra los resultados
+		gifGrid.innerHTML = '';
+		datos.data.forEach(gif =>{
+			const img = document.createElement('img');
+			img.classList.add('gifItem');
+			//Usa la version pequeña para cargar mas rapido
+			img.src = gif.images.fixed_height_small.url;
+			img.alt = gif.title;
+
+			//Al hacer clic seleciona este gif
+			img.addEventListener('click', ()=>{
+				gifGrid.querySelectorAll('.gifItem').forEach(g => g.classList.remove('selected'));
+				img.classList.add('selected');
+				// Guarda la URL del gif como personaje
+				personaje = gif.images.original.url;
+			});
+
+			gifGrid.appendChild(img);
 		})
 
-		//Marca como seleccionada la opcion que todo el usuario
-		opcion.classList.add('selected');
-		opcion.querySelector('.radioDot').classList.add('filled');
-
-		//Guarda el personaje elegido en la variable global.
-		personaje = opcion.dataset.personaje
-	})
-})
+	}catch(error){
+		//Si hay un error de red;
+		gifGrid.innerHTML = `
+			<div class="gifPlaceholder">
+				<i class="fa-solid fa-wifi"></i>
+				<span>Error de conexión</span>
+			</div>
+		`;
+	}
+}
 
 //? 7. TIMER — lógica principal
 //*Controla el inicio, pausa y detención del timer
@@ -291,6 +567,11 @@ function terminarCiclo() {
     actualizarReloj()
 }
 
+// BOTÓN TEMPORAL — salta directo al descanso para testear
+document.getElementById('btnSkip').addEventListener('click', () => {
+    terminarCiclo()
+})
+
 //? 8. CICLOS — cuadraditos y progreso
 //* Genera los cuadritos de ciclos según la configuración
 function generarCiclos() {
@@ -361,17 +642,6 @@ async function inicializar() {
 	valConcentracion.value = concentracion
 	valDescanso.value = descanso
 	valCiclos.value = ciclosTotales
-
-	//Marca el personaje guardado como seleccionado
-	opcionesPersonaje.forEach(opcion =>{
-		if (opcion.dataset.personaje === personaje) {
-			opcion.classList.add('selected')
-			opcion.querySelector('.radioDot').classList.add('filled')
-		}else{
-			opcion.classList.remove('selected')
-			opcion.querySelector('.radioDot').classList.remove('filled')
-		}
-	})
 
 	//Calcula el total con los valores cargados
 	calcularTotal()
