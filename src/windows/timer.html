@@ -144,6 +144,10 @@
 
 			<!-- Botón empezar — siempre al fondo -->
 			<div class="btnMainStart">
+				<button id="btnOpciones">
+					<i class="fa-solid fa-gear"></i>
+				</button>
+
 				<button id="btnEmpezar">
 					EMPEZAR <i class="fa-solid fa-play"></i>
 				</button>
@@ -153,9 +157,86 @@
 	</div>
 
 	<!-- =============================
-        VISTA 1.5: TIMER
-        Se muestra al presionar Empezar
-    ============================== -->
+    VISTA 1.5: CONFIGURACIÓN
+    Opciones visuales del blocker
+	============================== -->
+	<div id="vistaConfig" class="oculto">
+
+		<!-- Barra superior -->
+		<div class="topBar">
+			<button id="btnVolverConfig">
+				<i class="fa-solid fa-arrow-left"></i>
+			</button>
+			<span class="appName">Confi<span class="accent">g</span></span>
+			<button id="btnModoConfig" title="Cambiar modo claro/oscuro">
+				<i id="iconoModoConfig" class="fa-regular fa-moon"></i>
+			</button>
+		</div>
+
+		<div class="settingsBody">
+
+			<!-- SECCIÓN 1: Fondo -->
+			<p class="sectionTitle">// FONDO //</p>
+
+			<div class="paramBlock">
+				<div class="paramRow">
+					<span class="paramName">COLOR</span>
+					<input type="color" id="colorFondo" value="#000000">
+				</div>
+			</div>
+
+			<div class="paramBlock">
+				<div class="paramRow">
+					<span class="paramName">DIFUMINADO</span>
+					<span class="paramVal" id="valDifuminado">75%</span>
+				</div>
+				<input type="range" id="sliderDifuminado" min="0" max="100" value="75" step="1">
+			</div>
+
+			<!-- SECCIÓN 2: Posición -->
+			<p class="sectionTitle">// POSICIÓN //</p>
+
+			<div class="posicionGrid" id="posicionGrid">
+				<div class="posicionZona" data-pos="top-left"></div>
+				<div class="posicionZona" data-pos="top-center"></div>
+				<div class="posicionZona" data-pos="top-right"></div>
+				<div class="posicionZona" data-pos="middle-left"></div>
+				<div class="posicionZona" data-pos="middle-center"></div>
+				<div class="posicionZona" data-pos="middle-right"></div>
+				<div class="posicionZona" data-pos="bottom-left"></div>
+				<div class="posicionZona" data-pos="bottom-center"></div>
+				<div class="posicionZona" data-pos="bottom-right"></div>
+			</div>
+
+			<!-- Opción pantalla completa -->
+			<div class="configOpt" id="optPantallaCompleta">
+				<i class="fa-solid fa-expand"></i>
+				<span>Pantalla completa</span>
+				<div class="toggleSwitch" id="togglePantallaCompleta">
+					<div class="toggleThumb"></div>
+				</div>
+			</div>
+
+			<!-- SECCIÓN 3: Movimiento -->
+			<p class="sectionTitle">// MOVIMIENTO //</p>
+
+			<div class="movimientoOpts">
+				<div class="movimientoOpt selected" data-mov="ninguno">
+					<i class="fa-solid fa-ban"></i>
+					<span>Ninguno</span>
+				</div>
+				<div class="movimientoOpt" data-mov="ltr">
+					<i class="fa-solid fa-arrow-right"></i>
+					<span>← →</span>
+				</div>
+				<div class="movimientoOpt" data-mov="rtl">
+					<i class="fa-solid fa-arrow-left"></i>
+					<span>→ ←</span>
+				</div>
+			</div>
+
+		</div>
+	</div>
 
 	<!-- =============================
         VISTA 2: TIMER

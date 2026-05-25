@@ -27,6 +27,10 @@ const valCiclos = document.getElementById('valCiclos')
 const totalSesion = document.getElementById('totalSesion')
 const btnEmpezar = document.getElementById('btnEmpezar')
 
+const btnOpciones = document.getElementById('btnOpciones');
+const vistaConfig = document.getElementById('vistaConfig');
+const btnVolverConfig = document.getElementById('btnVolverConfig');
+
 // Timer
 const vistaSettings = document.getElementById('vistaSettings')
 const vistaTimer = document.getElementById('vistaTimer')
@@ -156,8 +160,19 @@ btnSettings.addEventListener('click', ()=>{
 	vistaSettings.classList.remove('oculto');
 })
 
-//? 5. MODO CLARO/OSCURO
+//* Abrir vista de configuración visual
+btnOpciones.addEventListener('click', () => {
+    vistaSettings.classList.add('oculto')
+    vistaConfig.classList.remove('oculto')
+})
 
+//* Volver desde configuración visual
+btnVolverConfig.addEventListener('click', () => {
+    vistaConfig.classList.add('oculto')
+    vistaSettings.classList.remove('oculto')
+})
+
+//? 5. MODO CLARO/OSCURO
 function toggleModo() {
 	//Cambia el valor de la variable
 	modoOscuro = !modoOscuro;
@@ -183,6 +198,17 @@ function toggleModo() {
 //* Conecta el boton del modo en settings y en timer al mismo funcion
 btnModo.addEventListener('click', toggleModo);
 btnModo2.addEventListener('click', toggleModo);
+
+//? 5.1 CONFIG VISUAL — Fondo
+
+const colorFondo = document.getElementById('colorFondo')
+const sliderDifuminado = document.getElementById('sliderDifuminado')
+const valDifuminado = document.getElementById('valDifuminado')
+
+//* Cambia el texto del porcentaje
+sliderDifuminado.addEventListener('input', () => {
+    valDifuminado.textContent = `${sliderDifuminado.value}%`
+})
 
 //? 6. DISEÑO DE DESCANSO - navegacion entre casillas
 //* Referencias a los tabs

@@ -153,7 +153,7 @@ ipcMain.handle('cargar-config', () =>{
 //* Busca GIFs en Giphy desde el proceso principal
 ipcMain.handle('buscar-giphy', async (event, { query, tipo }) => {
     try {
-        const apiKey = process.env.GIPHY_API_KEY
+        const apiKey = process.env.GIPHY_API_KEY || '1q8GrEJgcFFbrUeu8qJGRQE5XgPAwAe6'
         const url = `https://api.giphy.com/v1/${tipo}/search?api_key=${apiKey}&q=${encodeURIComponent(query)}&limit=24&rating=g`
         const response = await fetch(url)
         const datos = await response.json()
