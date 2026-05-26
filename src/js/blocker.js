@@ -11,10 +11,69 @@ let datosDescanso = null // Guarda los datos para usarlos en el ESC
 //* Recibe el tiempo y el animal desde main.js via preload
 window.api.recibirDatosDescanso((datos) => {
     // Guarda los datos globalmente para que ESC pueda usarlos
-    datosDescanso = datos
+    datosDescanso = datos;
 
-    // Aplica el animal seleccionado
     const animalImg = document.getElementById('animalImg')
+    const contenedor = document.querySelector('.blockerCenter')
+
+    // Aplica la configuracion visual del fondo
+    if (datos.configBlocker) {
+        const config = datos.configBlocker
+
+        // Convierte el color hex a RGB para poder aplicar la opacidad
+        const hex = config.colorFondo.replace('#', '')
+        const r = parseInt(hex.substring(0, 2), 16)
+        const g = parseInt(hex.substring(2, 4), 16)
+        const b = parseInt(hex.substring(4, 6), 16)
+
+        // Convierte el porcentaje de difuminado a valor de opacidad 0-1
+        const opacidad = (100 - config.difuminado) / 100;
+
+        // Aplica el color con la opacidad al fondo del body
+        document.body.style.background = `rgba(${r}, ${g}, ${b}, ${opacidad})`;
+
+        if (config.pantallaCompleta) {
+            //Pantalla completa - imagen ocupa todo el monitor
+            contenedor.style.position = 'fixed'
+            contenedor.style.top = '0'
+            contenedor.style.left = '0'
+            contenedor.style.width = '100vw'
+            contenedor.style.height = '100vh'
+            animalImg.style.width = '100%'
+            animalImg.style.height = '100%'
+            animalImg.style.objectFit = 'contain'
+        }else{
+            // Posición en una de las 9 zonas
+            contenedor.style.position = 'fixed'
+            contenedor.style.width = 'auto'
+            contenedor.style.height = 'auto'
+            animalImg.style.width = '420px'
+            animalImg.style.height = '420px'
+            animalImg.style.objectFit = 'contain'
+
+            // Mapea la posición elegida a coordenadas CSS
+            const posiciones = {
+                'top-left':      { top: '0',    left: '0',    right: 'auto',   bottom: 'auto'  },
+                'top-center':    { top: '0',    left: '50%',  right: 'auto',   bottom: 'auto',  transform: 'translateX(-50%)' },
+                'top-right':     { top: '0',    left: 'auto', right: '0',      bottom: 'auto'  },
+                'middle-left':   { top: '50%',  left: '0',    right: 'auto',   bottom: 'auto',  transform: 'translateY(-50%)' },
+                'middle-center': { top: '50%',  left: '50%',  right: 'auto',   bottom: 'auto',  transform: 'translate(-50%, -50%)' },
+                'middle-right':  { top: '50%',  left: 'auto', right: '0',      bottom: 'auto',  transform: 'translateY(-50%)' },
+                'bottom-left':   { top: 'auto', left: '0',    right: 'auto',   bottom: '0'     },
+                'bottom-center': { top: 'auto', left: '50%',  right: 'auto',   bottom: '0',     transform: 'translateX(-50%)' },
+                'bottom-right':  { top: 'auto', left: 'auto', right: '0',      bottom: '0'     }
+            }
+
+            const pos = posiciones[config.posicion] || posiciones['middle-center']
+
+            // Aplica las coordenadas al contenedor
+            contenedor.style.top = pos.top
+            contenedor.style.left = pos.left
+            contenedor.style.right = pos.right
+            contenedor.style.bottom = pos.bottom
+            contenedor.style.transform = pos.transform || 'none'
+        }
+    }
     
     // Detecta el tipo de personaje y asigna la ruta correcta
     if (!datos.personaje) {

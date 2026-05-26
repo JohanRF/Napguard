@@ -185,6 +185,8 @@ function toggleModo() {
 	iconoModo.className = `fa-regular ${iconoClase}`;
 	iconoModo2.className = `fa-regular ${iconoClase}`;
 
+	document.getElementById('iconoModoConfig').className = `fa-regular ${iconoClase}`;
+
 	//Guarda el modo actual inmediatamente
 	window.api.guardarConfig({
 		concentracion: concentracion,
@@ -199,15 +201,111 @@ function toggleModo() {
 btnModo.addEventListener('click', toggleModo);
 btnModo2.addEventListener('click', toggleModo);
 
+document.getElementById('btnModoConfig').addEventListener('click', toggleModo);
+
 //? 5.1 CONFIG VISUAL — Fondo
 
 const colorFondo = document.getElementById('colorFondo')
 const sliderDifuminado = document.getElementById('sliderDifuminado')
 const valDifuminado = document.getElementById('valDifuminado')
+const btnAceptarConfig = document.getElementById('btnAceptarConfig')
+const btnCancelarConfig = document.getElementById('btnCancelarConfig')
+const togglePantallaCompleta = document.getElementById('togglePantallaCompleta')
 
-//* Cambia el texto del porcentaje
+//* Configuración visual del blocker con valores por defecto
+let configBlocker = {
+    colorFondo: '#000000',
+    difuminado: 75,
+    posicion: 'middle-center',
+    pantallaCompleta: false,
+    movimiento: 'ninguno'
+}
+
+//* Copia temporal para cancelar cambios sin guardar
+let configTemporal = {...configBlocker}
+
+//* Al abrir Config carga los valores actuales en los controles
+btnOpciones.addEventListener('click', ()=>{
+	vistaSettings.classList.add('oculto');
+	vistaConfig.classList.remove('oculto');
+
+	//Aplica valores guardados a los controles visuales
+	colorFondo.value = configBlocker.colorFondo
+	sliderDifuminado.value = configBlocker.difuminado
+	valDifuminado.textContent = `${configBlocker.difuminado}%`
+
+	//Marca posicion activa
+	document.querySelectorAll('.posicionZona').forEach(z =>{
+		z.classList.toggle('selected', z.dataset.pos === configBlocker.posicion);
+	})
+
+	// Marca movimiento activo
+	document.querySelectorAll('.movimientoOpt').forEach(m =>{
+		m.classList.toggle('selected', m.dataset.mov === configBlocker.movimiento);
+	})
+
+	// Toggle pantalla completa
+	togglePantallaCompleta.classList.toggle('active', configBlocker.pantallaCompleta);
+
+	//Guarda copia por si cancela
+	configTemporal = {...configBlocker};
+})
+
+//* Actualiza el porcentaje en tiempo real
 sliderDifuminado.addEventListener('input', () => {
     valDifuminado.textContent = `${sliderDifuminado.value}%`
+})
+
+//* Selección de posición
+document.querySelectorAll('.posicionZona').forEach(zona => {
+    zona.addEventListener('click', () => {
+        document.querySelectorAll('.posicionZona').forEach(z => z.classList.remove('selected'))
+        zona.classList.add('selected')
+    })
+})
+
+//* Toggle pantalla completa
+togglePantallaCompleta.addEventListener('click', () => {
+    togglePantallaCompleta.classList.toggle('active')
+})
+
+//* Selección de movimiento
+document.querySelectorAll('.movimientoOpt').forEach(opt => {
+    opt.addEventListener('click', () => {
+        document.querySelectorAll('.movimientoOpt').forEach(o => o.classList.remove('selected'))
+        opt.classList.add('selected')
+    })
+})
+
+//* ACEPTAR — guarda los cambios y vuelve a settings
+btnAceptarConfig.addEventListener('click', () => {
+    const posSeleccionada = document.querySelector('.posicionZona.selected')
+    const movSeleccionado = document.querySelector('.movimientoOpt.selected')
+
+    // Guarda todos los valores actuales
+    configBlocker = {
+        colorFondo: colorFondo.value,
+        difuminado: parseInt(sliderDifuminado.value),
+        posicion: posSeleccionada ? posSeleccionada.dataset.pos : 'middle-center',
+        pantallaCompleta: togglePantallaCompleta.classList.contains('active'),
+        movimiento: movSeleccionado ? movSeleccionado.dataset.mov : 'ninguno'
+    }
+
+    vistaConfig.classList.add('oculto')
+    vistaSettings.classList.remove('oculto')
+})
+
+//* CANCELAR y VOLVER — descartan cambios
+btnCancelarConfig.addEventListener('click', () => {
+    configBlocker = { ...configTemporal }
+    vistaConfig.classList.add('oculto')
+    vistaSettings.classList.remove('oculto')
+})
+
+btnVolverConfig.addEventListener('click', () => {
+    configBlocker = { ...configTemporal }
+    vistaConfig.classList.add('oculto')
+    vistaSettings.classList.remove('oculto')
 })
 
 //? 6. DISEÑO DE DESCANSO - navegacion entre casillas
@@ -572,7 +670,8 @@ function terminarCiclo() {
         window.api.abrirBlocker({
             personaje: personaje,
             segundos: descanso * 60,
-			esUltimoCiclo: cicloActual >= ciclosTotales
+			esUltimoCiclo: cicloActual >= ciclosTotales,
+			configBlocker: configBlocker,
         })
 
     } else {
@@ -658,6 +757,8 @@ async function inicializar() {
 	const iconoClase = modoOscuro ? 'fa-sun' : 'fa-moon'
 	iconoModo.className = `fa-regular ${iconoClase}`
 	iconoModo2.className = `fa-regular ${iconoClase}`
+
+	document.getElementById('iconoModoConfig').className = `fa-regular ${iconoClase}`;
 
 	//Actualiza los sliders con los valores guardados
 	sliderConcentracion.value = concentracion
