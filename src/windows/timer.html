@@ -235,6 +235,31 @@
 				</div>
 			</div>
 
+			<!-- Mini opciones — solo visibles cuando hay movimiento activo -->
+			<div id="movimientoOpciones" class="oculto">
+
+				<!-- Tipo de movimiento -->
+				<div class="movimientoTipos">
+					<div class="movimientoTipo selected" data-tipo="atravesar">
+						<i class="fa-solid fa-right-from-bracket"></i>
+						<span>Atravesar</span>
+					</div>
+					<div class="movimientoTipo" data-tipo="idaVuelta">
+						<i class="fa-solid fa-right-left"></i>
+						<span>Ida y vuelta</span>
+					</div>
+				</div>
+
+				<!-- Control de velocidad -->
+				<div class="paramBlock">
+					<div class="paramRow">
+						<span class="paramName">VELOCIDAD</span>
+						<span class="paramVal" id="valVelocidad">5</span>
+					</div>
+					<input type="range" id="sliderVelocidad" min="1" max="10" value="5" step="1">
+				</div>
+			</div>
+
 			<div class="configBotones">
 				<button id="btnCancelarConfig">CANCELAR</button>
 				<button id="btnAceptarConfig">ACEPTAR</button>

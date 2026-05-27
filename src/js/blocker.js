@@ -8,6 +8,8 @@ document.body.focus()
 let intervalo = null
 let datosDescanso = null // Guarda los datos para usarlos en el ESC
 
+// Variaabl para el intervalo de animacion
+let animacionMovimiento = null;
 //* Recibe el tiempo y el animal desde main.js via preload
 window.api.recibirDatosDescanso((datos) => {
     // Guarda los datos globalmente para que ESC pueda usarlos
@@ -108,12 +110,68 @@ window.api.recibirDatosDescanso((datos) => {
             window.api.cerrarBlocker({ esUltimoCiclo: datos.esUltimoCiclo })
         }
     }, 1000)
+
+    // Aplica el movimiento si está configurado
+    if (datos.configBlocker && datos.configBlocker.movimiento !== 'ninguno') {
+        const config = datos.configBlocker
+        const contenedor = document.querySelector('.blockerCenter')
+        const ancho = window.screen.width
+        const anchoImg = animalImg.offsetWidth
+
+        // Velocidad — convierte 1-10 a pixeles por frame
+        const velocidad = config.velocidad || 5
+        const px = velocidad * 2
+
+        // Posición inicial según dirección
+        let posX = config.movimiento === 'ltr' ? -anchoImg : ancho
+        contenedor.style.position = 'fixed'
+        contenedor.style.top = '50%'
+        contenedor.style.transform = 'translateY(-50%)'
+        contenedor.style.left = posX + 'px'
+
+        // Dirección inicial
+        let direccion = config.movimiento === 'ltr' ? 1 : -1
+
+        // Inicia la animación
+        animacionMovimiento = setInterval(() => {
+            posX += px * direccion
+
+            if (config.tipoMovimiento === 'atravesar') {
+                // Reaparece por el lado opuesto
+                if (posX > ancho) posX = -anchoImg
+                if (posX < -anchoImg) posX = ancho
+
+            } else if (config.tipoMovimiento === 'idaVuelta') {
+                // Rebota en los bordes
+                if (posX + anchoImg >= ancho) {
+                    posX = ancho - anchoImg
+                    direccion = -1
+                }
+                if (posX <= 0) {
+                    posX = 0
+                    direccion = 1
+                }
+            }
+
+            contenedor.style.left = posX + 'px'
+
+            //Voltea la imagen segun la dirección actual
+            animalImg.style.transform = direccion > 0 ? 'scaleX(1)' : 'scaleX(-1)'
+        }, 16) // 60fps aproximado
+    }
 })
 
 //* Tecla ESC para desbloquear en emergencia
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         clearInterval(intervalo)
+
+        //Detiene la animacion antes de cerrar
+        if (animacionMovimiento) {
+            clearInterval(animacionMovimiento);
+            animacionMovimiento = null;
+        }
+
         // Pasa esUltimoCiclo igual que cuando termina naturalmente
         window.api.cerrarBlocker({
             esUltimoCiclo: datosDescanso && datosDescanso.esUltimoCiclo

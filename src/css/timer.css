@@ -1027,3 +1027,47 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 10px;
     cursor: pointer;
 }
+
+/* ==============================
+    MOVIMIENTO — mini opciones
+============================== */
+.movimientoTipos {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    margin-top: 8px;
+}
+
+.movimientoTipo {
+    flex: 1;
+    background: var(--bgSecundario);
+    border: 1.5px solid var(--borde);
+    border-radius: 8px;
+    padding: 10px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.movimientoTipo i {
+    font-size: 16px;
+    color: var(--textoSecundario);
+}
+
+.movimientoTipo span {
+    font-size: 6px;
+    font-family: 'Press Start 2P', monospace;
+    color: var(--texto);
+    text-align: center;
+}
+
+.movimientoTipo.selected {
+    border-color: var(--acento);
+}
+
+.movimientoTipo.selected i {
+    color: var(--acento);
+}

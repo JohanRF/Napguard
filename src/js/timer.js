@@ -247,6 +247,20 @@ btnOpciones.addEventListener('click', ()=>{
 	// Toggle pantalla completa
 	togglePantallaCompleta.classList.toggle('active', configBlocker.pantallaCompleta);
 
+	// Muestra mini opciones de mov solo si el movimiento no es 'ninguno
+	if (configBlocker.movimiento !== 'ninguno') {
+		movimientoOpciones.classList.remove('oculto');
+	}else{
+		movimientoOpciones.classList.add('oculto');
+	}
+
+	document.querySelectorAll('.movimientoTIpo').forEach(t =>{
+		t.classList.toggle('selected', t.dataset.tipo === configBlocker.tipoMovimiento);
+	})
+
+	sliderVelocidad.value = configBlocker.velocidad || 5;
+	valVelocidad.textContent = configBlocker.velocidad || 5;
+	
 	//Guarda copia por si cancela
 	configTemporal = {...configBlocker};
 })
@@ -269,12 +283,38 @@ togglePantallaCompleta.addEventListener('click', () => {
     togglePantallaCompleta.classList.toggle('active')
 })
 
-//* Selección de movimiento
+//* Referencia a las mini opciones de movimiento
+const movimientoOpciones = document.getElementById('movimientoOpciones');
+const sliderVelocidad = document.getElementById('sliderVelocidad');
+const valVelocidad = document.getElementById('valVelocidad'); 
+
+// Seleccion de movimiento -- muestra u oculta mini opciones:
 document.querySelectorAll('.movimientoOpt').forEach(opt => {
     opt.addEventListener('click', () => {
         document.querySelectorAll('.movimientoOpt').forEach(o => o.classList.remove('selected'))
         opt.classList.add('selected')
+
+		//Si elige Ninguno oculta las mini opciones
+		//Si elige cualquier otro las muestra
+		if (opt.dataset.mov === 'ninguno') {
+			movimientoOpciones.classList.add('oculto')
+		}else{
+			movimientoOpciones.classList.remove('oculto')
+		}
     })
+})
+
+//Selecciona de tipo -- Atravesar o Ida y vuelta
+document.querySelectorAll('.movimientoTipo').forEach(tipo =>{
+	tipo.addEventListener('click', ()=>{
+		document.querySelectorAll('.movimientoTipo').forEach(t => t.classList.remove('selected'));
+		tipo.classList.add('selected');
+	})
+})
+
+//Actualiza el valor de velocidad en tiempo real
+sliderVelocidad.addEventListener('input', ()=>{
+	valVelocidad.textContent = sliderVelocidad.value;
 })
 
 //* ACEPTAR — guarda los cambios y vuelve a settings
@@ -282,13 +322,18 @@ btnAceptarConfig.addEventListener('click', () => {
     const posSeleccionada = document.querySelector('.posicionZona.selected')
     const movSeleccionado = document.querySelector('.movimientoOpt.selected')
 
+	const tipoSeleccionado = document.querySelector('.movimientoTipo.selected')
+	const movActivo = movSeleccionado ? movSeleccionado.dataset.mov : 'ninguno'
+
     // Guarda todos los valores actuales
     configBlocker = {
         colorFondo: colorFondo.value,
         difuminado: parseInt(sliderDifuminado.value),
         posicion: posSeleccionada ? posSeleccionada.dataset.pos : 'middle-center',
         pantallaCompleta: togglePantallaCompleta.classList.contains('active'),
-        movimiento: movSeleccionado ? movSeleccionado.dataset.mov : 'ninguno'
+        movimiento: movActivo,
+		tipoMovimiento: tipoSeleccionado ? tipoSeleccionado.dataset.tipo : 'atravesar',
+		velocidad: parseInt(sliderVelocidad.value),
     }
 
     vistaConfig.classList.add('oculto')
