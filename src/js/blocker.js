@@ -75,6 +75,60 @@ window.api.recibirDatosDescanso((datos) => {
             contenedor.style.bottom = pos.bottom
             contenedor.style.transform = pos.transform || 'none'
         }
+
+        // --- APLICACIÓN DE ESTILOS DE TEXTO AL CONTADOR ---
+        const tiempoEl = document.getElementById('tiempoDescanso')
+        
+        // Color
+        if (config.textColor) {
+            tiempoEl.style.color = config.textColor
+        }
+
+        // Tamaño
+        if (config.textSize) {
+            tiempoEl.style.fontSize = `${config.textSize}px`
+        }
+
+        // Posición en 9 zonas para el texto
+        if (config.textPosition) {
+            const posicionesTexto = {
+                'top-left':      { top: '20px',  left: '20px',  right: 'auto', bottom: 'auto', transform: 'none' },
+                'top-center':    { top: '20px',  left: '50%',   right: 'auto', bottom: 'auto', transform: 'translateX(-50%)' },
+                'top-right':     { top: '20px',  left: 'auto',  right: '20px', bottom: 'auto', transform: 'none' },
+                'middle-left':   { top: '50%',   left: '20px',  right: 'auto', bottom: 'auto', transform: 'translateY(-50%)' },
+                'middle-center': { top: '50%',   left: '50%',   right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' },
+                'middle-right':  { top: '50%',   left: 'auto',  right: '20px', bottom: 'auto', transform: 'translateY(-50%)' },
+                'bottom-left':   { top: 'auto',  left: '20px',  right: 'auto', bottom: '20px', transform: 'none' },
+                'bottom-center': { top: 'auto',  left: '50%',   right: 'auto', bottom: '20px', transform: 'translateX(-50%)' },
+                'bottom-right':  { top: 'auto',  left: 'auto',  right: '20px', bottom: '20px', transform: 'none' }
+            }
+            const posTxt = posicionesTexto[config.textPosition] || posicionesTexto['top-center']
+            
+            tiempoEl.style.position = 'fixed'
+            tiempoEl.style.top = posTxt.top
+            tiempoEl.style.left = posTxt.left
+            tiempoEl.style.right = posTxt.right
+            tiempoEl.style.bottom = posTxt.bottom
+            tiempoEl.style.transform = posTxt.transform
+        }
+
+        // Cargar fuente offline dinámicamente si no es la por defecto
+        if (config.textFont && config.textFont !== 'Press Start 2P' && config.textFontPath) { 
+            const fontUrl = config.textFontPath.replace(/\\/g, '/')
+            const nombreFamilia = config.textFont.replace(/\s+/g, '')
+            
+            // Usamos FontFace API para cargar la fuente descargada en disco
+            const font = new FontFace(nombreFamilia, `url("file:///${fontUrl}")`)
+            font.load().then((loadedFont) => {
+                document.fonts.add(loadedFont)
+                tiempoEl.style.fontFamily = `'${nombreFamilia}', sans-serif`
+                console.log(`Fuente offline aplicada en blocker: ${nombreFamilia}`)
+            }).catch((err) => {
+                console.error(`Error al cargar fuente offline en blocker:`, err)
+            })
+        } else {
+            tiempoEl.style.fontFamily = `'Press Start 2P', monospace`
+        }
     }
     
     // Detecta el tipo de personaje y asigna la ruta correcta

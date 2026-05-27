@@ -203,7 +203,7 @@ btnModo2.addEventListener('click', toggleModo);
 
 document.getElementById('btnModoConfig').addEventListener('click', toggleModo);
 
-//? 5.1 CONFIG VISUAL — Fondo
+//? 5.1 CONFIG VISUAL — Fondo y Texto
 
 const colorFondo = document.getElementById('colorFondo')
 const sliderDifuminado = document.getElementById('sliderDifuminado')
@@ -212,13 +212,52 @@ const btnAceptarConfig = document.getElementById('btnAceptarConfig')
 const btnCancelarConfig = document.getElementById('btnCancelarConfig')
 const togglePantallaCompleta = document.getElementById('togglePantallaCompleta')
 
+// Referencias a los tabs de Configuración
+const tabConfigFondo = document.getElementById('tabConfigFondo')
+const tabConfigTexto = document.getElementById('tabConfigTexto')
+
+// Referencias a los paneles de Configuración
+const panelConfigFondo = document.getElementById('panelConfigFondo')
+const panelConfigTexto = document.getElementById('panelConfigTexto')
+
+// Referencias a los nuevos controles del Tab TEXTO
+const colorTexto = document.getElementById('colorTexto')
+const sliderSizeTexto = document.getElementById('sliderSizeTexto')
+const valSizeTexto = document.getElementById('valSizeTexto')
+const selectFuenteTexto = document.getElementById('selectFuenteTexto')
+
+// Función para alternar tabs de configuración
+function cambiarTabConfig(tabActivo, panelActivo) {
+    console.log('cambiarTabConfig ejecutándose para:', tabActivo.id, panelActivo.id);
+    [tabConfigFondo, tabConfigTexto].forEach(t => {
+        t.classList.remove('active');
+    });
+    [panelConfigFondo, panelConfigTexto].forEach(p => {
+        p.classList.add('oculto');
+    });
+    tabActivo.classList.add('active');
+    panelActivo.classList.remove('oculto');
+}
+
+// Eventos para cambiar tabs
+tabConfigFondo.addEventListener('click', () => cambiarTabConfig(tabConfigFondo, panelConfigFondo))
+tabConfigTexto.addEventListener('click', () => cambiarTabConfig(tabConfigTexto, panelConfigTexto))
+
 //* Configuración visual del blocker con valores por defecto
 let configBlocker = {
     colorFondo: '#000000',
     difuminado: 75,
     posicion: 'middle-center',
     pantallaCompleta: false,
-    movimiento: 'ninguno'
+    movimiento: 'ninguno',
+    tipoMovimiento: 'atravesar',
+    velocidad: 5,
+    // Valores por defecto del texto
+    textColor: '#5a3e28',
+    textSize: 120,
+    textPosition: 'middle-center',
+    textFont: 'Press Start 2P',
+    textFontPath: null
 }
 
 //* Copia temporal para cancelar cambios sin guardar
@@ -229,13 +268,16 @@ btnOpciones.addEventListener('click', ()=>{
 	vistaSettings.classList.add('oculto');
 	vistaConfig.classList.remove('oculto');
 
-	//Aplica valores guardados a los controles visuales
+	// Al abrir, siempre mostramos la pestaña de Fondo por defecto
+	cambiarTabConfig(tabConfigFondo, panelConfigFondo);
+
+	// Aplica valores guardados a los controles visuales del FONDO
 	colorFondo.value = configBlocker.colorFondo
 	sliderDifuminado.value = configBlocker.difuminado
 	valDifuminado.textContent = `${configBlocker.difuminado}%`
 
-	//Marca posicion activa
-	document.querySelectorAll('.posicionZona').forEach(z =>{
+	// Marca posicion activa del fondo
+	document.querySelectorAll('#posicionGrid .posicionZona').forEach(z =>{
 		z.classList.toggle('selected', z.dataset.pos === configBlocker.posicion);
 	})
 
@@ -261,19 +303,43 @@ btnOpciones.addEventListener('click', ()=>{
 	sliderVelocidad.value = configBlocker.velocidad || 5;
 	valVelocidad.textContent = configBlocker.velocidad || 5;
 	
+	// Aplica valores guardados a los controles del TEXTO
+	colorTexto.value = configBlocker.textColor || '#5a3e28'
+	sliderSizeTexto.value = configBlocker.textSize || 120
+	valSizeTexto.value = configBlocker.textSize || 120
+
+	// Marca posicion activa de texto
+	document.querySelectorAll('#posicionTextoGrid .posicionZonaTexto').forEach(z =>{
+		z.classList.toggle('selected', z.dataset.pos === (configBlocker.textPosition || 'middle-center'));
+	})
+
+	// Carga la fuente seleccionada
+	selectFuenteTexto.value = configBlocker.textFont || 'Press Start 2P'
+
 	//Guarda copia por si cancela
 	configTemporal = {...configBlocker};
 })
 
-//* Actualiza el porcentaje en tiempo real
+//* Actualiza el porcentaje de difuminado en tiempo real
 sliderDifuminado.addEventListener('input', () => {
     valDifuminado.textContent = `${sliderDifuminado.value}%`
 })
 
-//* Selección de posición
-document.querySelectorAll('.posicionZona').forEach(zona => {
+//* Sincroniza el slider y caja de texto de tamaño de fuente
+sincronizarSlider(sliderSizeTexto, valSizeTexto, () => {})
+
+//* Selección de posición del fondo
+document.querySelectorAll('#posicionGrid .posicionZona').forEach(zona => {
     zona.addEventListener('click', () => {
-        document.querySelectorAll('.posicionZona').forEach(z => z.classList.remove('selected'))
+        document.querySelectorAll('#posicionGrid .posicionZona').forEach(z => z.classList.remove('selected'))
+        zona.classList.add('selected')
+    })
+})
+
+//* Selección de posición del texto
+document.querySelectorAll('#posicionTextoGrid .posicionZonaTexto').forEach(zona => {
+    zona.addEventListener('click', () => {
+        document.querySelectorAll('#posicionTextoGrid .posicionZonaTexto').forEach(z => z.classList.remove('selected'))
         zona.classList.add('selected')
     })
 })
@@ -318,12 +384,32 @@ sliderVelocidad.addEventListener('input', ()=>{
 })
 
 //* ACEPTAR — guarda los cambios y vuelve a settings
-btnAceptarConfig.addEventListener('click', () => {
-    const posSeleccionada = document.querySelector('.posicionZona.selected')
+btnAceptarConfig.addEventListener('click', async () => {
+    const posSeleccionada = document.querySelector('#posicionGrid .posicionZona.selected')
+    const posTextoSeleccionada = document.querySelector('#posicionTextoGrid .posicionZonaTexto.selected')
     const movSeleccionado = document.querySelector('.movimientoOpt.selected')
 
 	const tipoSeleccionado = document.querySelector('.movimientoTipo.selected')
 	const movActivo = movSeleccionado ? movSeleccionado.dataset.mov : 'ninguno'
+
+    // Fuente seleccionada
+    const fuenteElegida = selectFuenteTexto.value
+    let fontPathLocal = null
+
+    // Desactivamos temporalmente el botón de aceptar para evitar doble clic mientras se descarga la fuente
+    btnAceptarConfig.disabled = true
+    btnAceptarConfig.textContent = 'DESCARGANDO FUENTE...'
+
+    try {
+        if (fuenteElegida !== 'Press Start 2P') {
+            fontPathLocal = await window.api.descargarFuente(fuenteElegida)
+        }
+    } catch (e) {
+        console.error('Error al procesar la fuente:', e)
+    }
+
+    btnAceptarConfig.disabled = false
+    btnAceptarConfig.textContent = 'ACEPTAR'
 
     // Guarda todos los valores actuales
     configBlocker = {
@@ -334,7 +420,23 @@ btnAceptarConfig.addEventListener('click', () => {
         movimiento: movActivo,
 		tipoMovimiento: tipoSeleccionado ? tipoSeleccionado.dataset.tipo : 'atravesar',
 		velocidad: parseInt(sliderVelocidad.value),
+        // Nuevos campos de texto
+        textColor: colorTexto.value,
+        textSize: parseInt(sliderSizeTexto.value),
+        textPosition: posTextoSeleccionada ? posTextoSeleccionada.dataset.pos : 'middle-center',
+        textFont: fuenteElegida,
+        textFontPath: fontPathLocal
     }
+
+    // Persistimos en disco para que no se pierdan las configuraciones
+    window.api.guardarConfig({
+        concentracion: concentracion,
+        descanso: descanso,
+        ciclosTotales: ciclosTotales,
+        personaje: personaje,
+        modoOscuro: modoOscuro,
+        configBlocker: configBlocker
+    })
 
     vistaConfig.classList.add('oculto')
     vistaSettings.classList.remove('oculto')
@@ -796,6 +898,11 @@ async function inicializar() {
 	ciclosTotales = config.ciclosTotales
 	personaje = config.personaje
 	modoOscuro = config.modoOscuro || false 
+
+	// Carga los valores de configBlocker si existen
+	if (config.configBlocker) {
+		configBlocker = { ...configBlocker, ...config.configBlocker }
+	} 
 
 	//Aplica el modo guardado al arrancar
 	document.body.classList.toggle('dark', modoOscuro)

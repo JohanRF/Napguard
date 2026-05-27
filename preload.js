@@ -37,4 +37,7 @@ contextBridge.exposeInMainWorld('api', {
 
 	// Elimina una imagen custom
 	eliminarImagenCustom: (nombre) => ipcRenderer.invoke('eliminar-imagen-custom', nombre),
+
+	// Descarga una fuente de Google Fonts para uso offline
+	descargarFuente: (nombreFuente) => ipcRenderer.invoke('descargar-fuente', nombreFuente),
 })

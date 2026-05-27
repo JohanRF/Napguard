@@ -161,7 +161,7 @@
     Opciones visuales del blocker
 	============================== -->
 	<div id="vistaConfig" class="oculto">
-
+		
 		<!-- Barra superior -->
 		<div class="topBar">
 			<button id="btnVolverConfig">
@@ -175,88 +175,161 @@
 
 		<div class="settingsBody">
 
-			<!-- SECCIÓN 1: Fondo -->
-			<p class="sectionTitle">// FONDO //</p>
-
-			<div class="paramBlock">
-				<div class="paramRow">
-					<span class="paramName">COLOR</span>
-					<input type="color" id="colorFondo" value="#000000">
-				</div>
+			<!-- TABS de Configuración -->
+			<div class="tabsRow">
+				<button class="tabBtn active" id="tabConfigFondo">Fondo</button>
+				<button class="tabBtn" id="tabConfigTexto">Texto</button>
 			</div>
 
-			<div class="paramBlock">
-				<div class="paramRow">
-					<span class="paramName">DIFUMINADO</span>
-					<span class="paramVal" id="valDifuminado">75%</span>
-				</div>
-				<input type="range" id="sliderDifuminado" min="0" max="100" value="75" step="1">
-			</div>
+			<!-- CONTENIDO TAB: Fondo -->
+			<div id="panelConfigFondo" class="tabPanel">
+				<!-- SECCIÓN 1: Fondo -->
+				<p class="sectionTitle">// FONDO //</p>
 
-			<!-- SECCIÓN 2: Posición -->
-			<p class="sectionTitle">// POSICIÓN //</p>
-
-			<div class="posicionGrid" id="posicionGrid">
-				<div class="posicionZona" data-pos="top-left"></div>
-				<div class="posicionZona" data-pos="top-center"></div>
-				<div class="posicionZona" data-pos="top-right"></div>
-				<div class="posicionZona" data-pos="middle-left"></div>
-				<div class="posicionZona" data-pos="middle-center"></div>
-				<div class="posicionZona" data-pos="middle-right"></div>
-				<div class="posicionZona" data-pos="bottom-left"></div>
-				<div class="posicionZona" data-pos="bottom-center"></div>
-				<div class="posicionZona" data-pos="bottom-right"></div>
-			</div>
-
-			<!-- Opción pantalla completa -->
-			<div class="configOpt" id="optPantallaCompleta">
-				<i class="fa-solid fa-expand"></i>
-				<span>Pantalla completa</span>
-				<div class="toggleSwitch" id="togglePantallaCompleta">
-					<div class="toggleThumb"></div>
-				</div>
-			</div>
-
-			<!-- SECCIÓN 3: Movimiento -->
-			<p class="sectionTitle">// MOVIMIENTO //</p>
-
-			<div class="movimientoOpts">
-				<div class="movimientoOpt selected" data-mov="ninguno">
-					<i class="fa-solid fa-ban"></i>
-					<span>Ninguno</span>
-				</div>
-				<div class="movimientoOpt" data-mov="ltr">
-					<i class="fa-solid fa-arrow-right"></i>
-					<span>← →</span>
-				</div>
-				<div class="movimientoOpt" data-mov="rtl">
-					<i class="fa-solid fa-arrow-left"></i>
-					<span>→ ←</span>
-				</div>
-			</div>
-
-			<!-- Mini opciones — solo visibles cuando hay movimiento activo -->
-			<div id="movimientoOpciones" class="oculto">
-
-				<!-- Tipo de movimiento -->
-				<div class="movimientoTipos">
-					<div class="movimientoTipo selected" data-tipo="atravesar">
-						<i class="fa-solid fa-right-from-bracket"></i>
-						<span>Atravesar</span>
-					</div>
-					<div class="movimientoTipo" data-tipo="idaVuelta">
-						<i class="fa-solid fa-right-left"></i>
-						<span>Ida y vuelta</span>
-					</div>
-				</div>
-
-				<!-- Control de velocidad -->
 				<div class="paramBlock">
 					<div class="paramRow">
-						<span class="paramName">VELOCIDAD</span>
-						<span class="paramVal" id="valVelocidad">5</span>
+						<span class="paramName">COLOR</span>
+						<input type="color" id="colorFondo" value="#000000">
 					</div>
-					<input type="range" id="sliderVelocidad" min="1" max="10" value="5" step="1">
+				</div>
+
+				<div class="paramBlock">
+					<div class="paramRow">
+						<span class="paramName">DIFUMINADO</span>
+						<span class="paramVal" id="valDifuminado">75%</span>
+					</div>
+					<input type="range" id="sliderDifuminado" min="0" max="100" value="75" step="1">
+				</div>
+
+				<div class="paramBlock">
+					<div class="paramRow">
+						<span class="paramName">TAMAÑO IMAGEN</span>
+						<select id="selectSizeImagen" style="font-family: 'Press Start 2P', monospace; font-size: 7px; background: var(--bgSecundario); border: 1px solid var(--borde); color: var(--texto); padding: 4px; border-radius: 4px; width: 100%;">
+							<option value="grande">Grande (80%)</option>
+							<option value="mediano" selected>Mediano (50%)</option>
+							<option value="pequeno">Pequeño (25%)</option>
+						</select>
+					</div>
+				</div>
+
+				<!-- SECCIÓN 2: Posición -->
+				<p class="sectionTitle">// POSICIÓN //</p>
+
+				<div class="posicionGrid" id="posicionGrid">
+					<div class="posicionZona" data-pos="top-left"></div>
+					<div class="posicionZona" data-pos="top-center"></div>
+					<div class="posicionZona" data-pos="top-right"></div>
+					<div class="posicionZona" data-pos="middle-left"></div>
+					<div class="posicionZona" data-pos="middle-center"></div>
+					<div class="posicionZona" data-pos="middle-right"></div>
+					<div class="posicionZona" data-pos="bottom-left"></div>
+					<div class="posicionZona" data-pos="bottom-center"></div>
+					<div class="posicionZona" data-pos="bottom-right"></div>
+				</div>
+
+				<!-- Opción pantalla completa -->
+				<div class="configOpt" id="optPantallaCompleta">
+					<i class="fa-solid fa-expand"></i>
+					<span>Pantalla completa</span>
+					<div class="toggleSwitch" id="togglePantallaCompleta">
+						<div class="toggleThumb"></div>
+					</div>
+				</div>
+
+				<!-- SECCIÓN 3: Movimiento -->
+				<p class="sectionTitle">// MOVIMIENTO //</p>
+
+				<div class="movimientoOpts">
+					<div class="movimientoOpt selected" data-mov="ninguno">
+						<i class="fa-solid fa-ban"></i>
+						<span>Ninguno</span>
+					</div>
+					<div class="movimientoOpt" data-mov="ltr">
+						<i class="fa-solid fa-arrow-right"></i>
+						<span>← →</span>
+					</div>
+					<div class="movimientoOpt" data-mov="rtl">
+						<i class="fa-solid fa-arrow-left"></i>
+						<span>→ ←</span>
+					</div>
+				</div>
+
+				<!-- Mini opciones — solo visibles cuando hay movimiento activo -->
+				<div id="movimientoOpciones" class="oculto">
+
+					<!-- Tipo de movimiento -->
+					<div class="movimientoTipos">
+						<div class="movimientoTipo selected" data-tipo="atravesar">
+							<i class="fa-solid fa-right-from-bracket"></i>
+							<span>Atravesar</span>
+						</div>
+						<div class="movimientoTipo" data-tipo="idaVuelta">
+							<i class="fa-solid fa-right-left"></i>
+							<span>Ida y vuelta</span>
+						</div>
+					</div>
+
+					<!-- Control de velocidad -->
+					<div class="paramBlock">
+						<div class="paramRow">
+							<span class="paramName">VELOCIDAD</span>
+							<span class="paramVal" id="valVelocidad">5</span>
+						</div>
+						<input type="range" id="sliderVelocidad" min="1" max="10" value="5" step="1">
+					</div>
+				</div>
+			</div>
+
+			<!-- CONTENIDO TAB: Texto -->
+			<div id="panelConfigTexto" class="tabPanel oculto">
+				<!-- SECCIÓN 1: Estilo de Texto -->
+				<p class="sectionTitle">// ESTILO DE TEXTO //</p>
+
+				<div class="paramBlock">
+					<div class="paramRow">
+						<span class="paramName">COLOR</span>
+						<input type="color" id="colorTexto" value="#5a3e28">
+					</div>
+				</div>
+
+				<div class="paramBlock">
+					<div class="paramRow">
+						<span class="paramName">TAMAÑO (PX)</span>
+						<input type="number" class="paramVal" id="valSizeTexto" value="120" min="20" max="250">
+					</div>
+					<input type="range" id="sliderSizeTexto" min="20" max="250" value="120" step="1">
+				</div>
+
+				<!-- SECCIÓN 2: Posición de Texto -->
+				<p class="sectionTitle">// POSICIÓN DE TEXTO //</p>
+
+				<div class="posicionGrid" id="posicionTextoGrid">
+					<div class="posicionZonaTexto posicionZona" data-pos="top-left"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="top-center"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="top-right"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="middle-left"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="middle-center"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="middle-right"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="bottom-left"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="bottom-center"><div class="posicionPunto"></div></div>
+					<div class="posicionZonaTexto posicionZona" data-pos="bottom-right"><div class="posicionPunto"></div></div>
+				</div>
+
+				<!-- SECCIÓN 3: Fuente Tipográfica -->
+				<p class="sectionTitle">// FUENTE //</p>
+
+				<div class="paramBlock">
+					<div class="paramRow">
+						<span class="paramName">FUENTE</span>
+						<select id="selectFuenteTexto" style="font-family: 'Press Start 2P', monospace; font-size: 7px; background: var(--bgSecundario); border: 1px solid var(--borde); color: var(--texto); padding: 4px; border-radius: 4px; width: 100%;">
+							<option value="Press Start 2P">Press Start 2P (Default)</option>
+							<option value="Roboto">Roboto (Sans-serif)</option>
+							<option value="Montserrat">Montserrat (Geometric)</option>
+							<option value="Pacifico">Pacifico (Handwritten)</option>
+							<option value="Playfair Display">Playfair Display (Serif)</option>
+							<option value="Outfit">Outfit (Modern)</option>
+						</select>
+					</div>
 				</div>
 			</div>
 

@@ -878,8 +878,9 @@ input[type="range"]::-webkit-slider-thumb {
 .posicionGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+    gap: 4px;
     margin-bottom: 10px;
+    max-width: 140px;
 }
 
 .posicionZona {
@@ -889,6 +890,39 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 8px;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Celda 1 — esquina top-left */
+.posicionZona[data-pos="top-left"] { align-items: flex-start; justify-content: flex-start; }
+/* Celda 2 — top-center */
+.posicionZona[data-pos="top-center"] { align-items: flex-start; justify-content: center; }
+/* Celda 3 — esquina top-right */
+.posicionZona[data-pos="top-right"] { align-items: flex-start; justify-content: flex-end; }
+/* Celda 4 — middle-left */
+.posicionZona[data-pos="middle-left"] { align-items: center; justify-content: flex-start; }
+/* Celda 5 — centro absoluto */
+.posicionZona[data-pos="middle-center"] { align-items: center; justify-content: center; }
+/* Celda 6 — middle-right */
+.posicionZona[data-pos="middle-right"] { align-items: center; justify-content: flex-end; }
+/* Celda 7 — esquina bottom-left */
+.posicionZona[data-pos="bottom-left"] { align-items: flex-end; justify-content: flex-start; }
+/* Celda 8 — bottom-center */
+.posicionZona[data-pos="bottom-center"] { align-items: flex-end; justify-content: center; }
+/* Celda 9 — esquina bottom-right */
+.posicionZona[data-pos="bottom-right"] { align-items: flex-end; justify-content: flex-end; }
+
+.posicionPunto {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--textoSecundario);
+    transition: background 0.2s;
+}
+
+.posicionZona.selected .posicionPunto {
+    background: #fff;
 }
 
 .posicionZona:hover {

@@ -53,12 +53,12 @@ function createWindow() {
 	//* Le digo a la ventana que HTML debe mostrar
 	mainWin.loadFile('src/windows/timer.html');
 
-	//Permite cargar recursos externos como FontAwesome
+	//Permite cargar recursos externos como FontAwesome y recursos locales (file:, data:)
 	mainWin.webContents.session.webRequest.onHeadersReceived((details, callback)=> {
 		callback({
 			responseHeaders:{
 				...details.responseHeaders,
-				'Content-Security-Policy': ["default-src 'self' 'unsafe-inline' https://kit.fontawesome.com https://ka-f.fontawesome.com https://fonts.googleapis.com https://fonts.gstatic.com https://api.giphy.com https://media.giphy.com https://media0.giphy.com https://media1.giphy.com https://media2.giphy.com https://media3.giphy.com https://media4.giphy.com"]
+				'Content-Security-Policy': ["default-src 'self' 'unsafe-inline' file: data: https://kit.fontawesome.com https://ka-f.fontawesome.com https://fonts.googleapis.com https://fonts.gstatic.com https://api.giphy.com https://media.giphy.com https://media0.giphy.com https://media1.giphy.com https://media2.giphy.com https://media3.giphy.com https://media4.giphy.com"]
 			}
 		})
 	})
@@ -223,6 +223,66 @@ ipcMain.handle('eliminar-imagen-custom', (event, nombre) => {
         return true
     } catch {
         return false
+    }
+})
+
+// Carpeta donde se guardan las fuentes descargadas
+const rutaFonts = path.join(app.getPath('userData'), 'custom-fonts')
+
+// Crea la carpeta si no existe
+if (!fs.existsSync(rutaFonts)) {
+    fs.mkdirSync(rutaFonts, { recursive: true })
+}
+
+// Descarga fuentes de Google Fonts y las guarda localmente para modo offline
+ipcMain.handle('descargar-fuente', async (event, nombreFuente) => {
+    try {
+        const nombreLimpio = nombreFuente.replace(/\s+/g, '')
+        const archivoLocal = path.join(rutaFonts, `${nombreLimpio}.woff2`)
+
+        // Si ya está descargada, no hace nada y devuelve la ruta
+        if (fs.existsSync(archivoLocal)) {
+            return archivoLocal
+        }
+
+        // Si es la fuente por defecto, no requiere descarga
+        if (nombreFuente === 'Press Start 2P') {
+            return null
+        }
+
+        console.log(`Iniciando descarga de la fuente: ${nombreFuente}`)
+        const nombreFamilia = nombreFuente.replace(/\s+/g, '+')
+        const urlCss = `https://fonts.googleapis.com/css2?family=${nombreFamilia}:wght@400`
+
+        // Simulamos un agente de navegación moderno para recibir .woff2
+        const resCss = await fetch(urlCss, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+        })
+        const cssTexto = await resCss.text()
+
+        // Buscamos la URL del archivo .woff2 en el CSS devuelto
+        const match = cssTexto.match(/src:\s*url\((https:\/\/fonts\.gstatic\.com\/s\/[^)]+\.woff2)\)/)
+        if (!match) {
+            throw new Error('No se pudo encontrar la URL de la fuente en el CSS de Google Fonts')
+        }
+
+        const urlFuente = match[1]
+        console.log(`URL del archivo de fuente encontrada: ${urlFuente}`)
+
+        // Descargamos el archivo de fuente binario
+        const resFuente = await fetch(urlFuente)
+        const arrayBuffer = await resFuente.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+
+        // Escribimos el archivo en disco
+        fs.writeFileSync(archivoLocal, buffer)
+        console.log(`Fuente guardada con éxito en: ${archivoLocal}`)
+        return archivoLocal
+    } catch (error) {
+        console.error(`Error descargando la fuente ${nombreFuente}:`, error)
+        return null
     }
 })
 
