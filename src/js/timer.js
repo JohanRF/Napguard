@@ -160,12 +160,6 @@ btnSettings.addEventListener('click', ()=>{
 	vistaSettings.classList.remove('oculto');
 })
 
-//* Abrir vista de configuración visual
-btnOpciones.addEventListener('click', () => {
-    vistaSettings.classList.add('oculto')
-    vistaConfig.classList.remove('oculto')
-})
-
 //* Volver desde configuración visual
 btnVolverConfig.addEventListener('click', () => {
     vistaConfig.classList.add('oculto')
@@ -246,7 +240,8 @@ tabConfigTexto.addEventListener('click', () => cambiarTabConfig(tabConfigTexto, 
 //* Configuración visual del blocker con valores por defecto
 let configBlocker = {
     colorFondo: '#000000',
-    difuminado: 75,
+    difuminado: 0,
+	tamanoImagen:'mediano',
     posicion: 'middle-center',
     pantallaCompleta: false,
     movimiento: 'ninguno',
@@ -275,6 +270,13 @@ btnOpciones.addEventListener('click', ()=>{
 	colorFondo.value = configBlocker.colorFondo
 	sliderDifuminado.value = configBlocker.difuminado
 	valDifuminado.textContent = `${configBlocker.difuminado}%`
+
+    // ... todo tu código existente de carga de valores ...
+	configTemporal = {...configBlocker};
+
+    // 👇 Solo agrega estas dos líneas al final
+	actualizarPreview()
+	activarPreviewEscritorio()
 
 	// Marca posicion activa del fondo
 	document.querySelectorAll('#posicionGrid .posicionZona').forEach(z =>{
@@ -415,6 +417,7 @@ btnAceptarConfig.addEventListener('click', async () => {
     configBlocker = {
         colorFondo: colorFondo.value,
         difuminado: parseInt(sliderDifuminado.value),
+		tamanoImagen: document.getElementById('selectSizeImagen').value,
         posicion: posSeleccionada ? posSeleccionada.dataset.pos : 'middle-center',
         pantallaCompleta: togglePantallaCompleta.classList.contains('active'),
         movimiento: movActivo,
@@ -440,6 +443,7 @@ btnAceptarConfig.addEventListener('click', async () => {
 
     vistaConfig.classList.add('oculto')
     vistaSettings.classList.remove('oculto')
+    actualizarPreview()
 })
 
 //* CANCELAR y VOLVER — descartan cambios
@@ -454,6 +458,135 @@ btnVolverConfig.addEventListener('click', () => {
     vistaConfig.classList.add('oculto')
     vistaSettings.classList.remove('oculto')
 })
+
+//? 5.2 PREVIEW — vista previa del blocker en tiempo real
+
+const previewCanvas = document.getElementById('previewCanvas')
+const previewImg = document.getElementById('previewImg')
+
+// Actualiza el preview con los valores actuales de los controles
+function actualizarPreview() {
+    // Actualiza el tiempo de descanso real configurado
+    const tiempoPreview = document.getElementById('previewTiempo')
+	if (tiempoPreview) {
+		const minutos = String(descanso).padStart(2, '0')
+		tiempoPreview.textContent = `${minutos}:00`
+	}
+
+    // Aplica color y difuminado
+    const hex = configBlocker.colorFondo.replace('#', '')
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)
+    const b = parseInt(hex.substring(4, 6), 16)
+    const opacidad = configBlocker.difuminado / 100
+    previewCanvas.style.background = 'transparent'
+
+    // Aplica el color como overlay encima del video
+    let overlay = document.getElementById('previewOverlay')
+    if (!overlay) {
+        overlay = document.createElement('div')
+        overlay.id = 'previewOverlay'
+        overlay.style.cssText = `
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        `
+        previewCanvas.appendChild(overlay)
+    }
+    overlay.style.background = `rgba(${r}, ${g}, ${b}, ${opacidad})`
+
+    // Aplica tamaño de imagen
+    const porcentajes = { grande: '80%', mediano: '50%', pequeno: '25%' }
+    const pct = porcentajes[configBlocker.tamanoImagen] || '50%'
+    previewImg.style.maxWidth = pct
+    previewImg.style.maxHeight = pct
+
+    // Aplica posición de imagen
+    const posMap = {
+        'top-left':      { top: '0',    left: '0',    right: 'auto', bottom: 'auto', transform: 'none' },
+        'top-center':    { top: '0',    left: '50%',  right: 'auto', bottom: 'auto', transform: 'translateX(-50%)' },
+        'top-right':     { top: '0',    left: 'auto', right: '0',    bottom: 'auto', transform: 'none' },
+        'middle-left':   { top: '50%',  left: '0',    right: 'auto', bottom: 'auto', transform: 'translateY(-50%)' },
+        'middle-center': { top: '50%',  left: '50%',  right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' },
+        'middle-right':  { top: '50%',  left: 'auto', right: '0',    bottom: 'auto', transform: 'translateY(-50%)' },
+        'bottom-left':   { top: 'auto', left: '0',    right: 'auto', bottom: '0',    transform: 'none' },
+        'bottom-center': { top: 'auto', left: '50%',  right: 'auto', bottom: '0',    transform: 'translateX(-50%)' },
+        'bottom-right':  { top: 'auto', left: 'auto', right: '0',    bottom: '0',    transform: 'none' }
+    }
+    const coords = posMap[configBlocker.posicion] || posMap['middle-center']
+    previewImg.style.top = coords.top
+    previewImg.style.left = coords.left
+    previewImg.style.right = coords.right
+    previewImg.style.bottom = coords.bottom
+    previewImg.style.transform = coords.transform
+
+    // Aplica imagen del personaje seleccionado
+    if (personaje) {
+        if (personaje.startsWith('http')) {
+            previewImg.src = personaje
+        } else if (personaje.includes('\\') || personaje.includes('/')) {
+            previewImg.src = personaje
+        } else {
+            previewImg.src = `../assets/images/${personaje}.png`
+        }
+    } else {
+        previewImg.src = '../assets/images/prado.webp'
+    }
+
+    // Aplica estilos del texto al previewTiempo
+    if (tiempoPreview) {
+        tiempoPreview.style.color = configBlocker.textColor || '#ffffff'
+        const ratio = 180 / window.screen.height
+        const tamanoEscalado = Math.max(8, Math.round((configBlocker.textSize || 120) * ratio))
+        tiempoPreview.style.fontSize = `${tamanoEscalado}px`
+        tiempoPreview.style.fontFamily = configBlocker.textFont
+            ? `'${configBlocker.textFont}', monospace`
+            : "'Press Start 2P', monospace"
+
+        // Posición del texto
+        const textPosMap = {
+            'top-left':      { top: '2%',  left: '1%',  right: 'auto', bottom: 'auto', transform: 'none' },
+            'top-center':    { top: '2%',  left: '50%', right: 'auto', bottom: 'auto', transform: 'translateX(-50%)' },
+            'top-right':     { top: '2%',  left: 'auto',right: '1%',  bottom: 'auto', transform: 'none' },
+            'middle-left':   { top: '50%', left: '1%',  right: 'auto', bottom: 'auto', transform: 'translateY(-50%)' },
+            'middle-center': { top: '50%', left: '50%', right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' },
+            'middle-right':  { top: '50%', left: 'auto',right: '1%',  bottom: 'auto', transform: 'translateY(-50%)' },
+            'bottom-left':   { top: 'auto',left: '1%',  right: 'auto', bottom: '2%',  transform: 'none' },
+            'bottom-center': { top: 'auto',left: '50%', right: 'auto', bottom: '2%',  transform: 'translateX(-50%)' },
+            'bottom-right':  { top: 'auto',left: 'auto',right: '1%',  bottom: '2%',  transform: 'none' }
+        }
+        const tCoords = textPosMap[configBlocker.textPosition] || textPosMap['top-center']
+        tiempoPreview.style.top       = tCoords.top
+        tiempoPreview.style.left      = tCoords.left
+        tiempoPreview.style.right     = tCoords.right
+        tiempoPreview.style.bottom    = tCoords.bottom
+        tiempoPreview.style.transform = tCoords.transform
+    }
+}
+
+async function activarPreviewEscritorio() {
+    try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: false
+        })
+
+        const video = document.getElementById('previewEscritorio')
+        video.srcObject = stream
+        video.play()
+
+    } catch(err) {
+        console.error('ERROR en activarPreviewEscritorio:', err)
+    }
+}
+
+// Preview en vivo desde Settings — cuando cambia el descanso
+sliderDescanso.addEventListener('input', actualizarPreview)
+
+// Preview en vivo desde Config — cuando cambia cualquier opción
+colorFondo.addEventListener('input', actualizarPreview)
+sliderDifuminado.addEventListener('input', actualizarPreview)
+document.getElementById('selectSizeImagen').addEventListener('change', actualizarPreview)
 
 //? 6. DISEÑO DE DESCANSO - navegacion entre casillas
 //* Referencias a los tabs
@@ -481,19 +614,15 @@ const imagenesPorCategoria = {
 		{ nombre: 'Gato', archivo: 'gato.png' },
 		{ nombre: 'Perro', archivo: 'perro.png' },
 		{ nombre: 'Capibara', archivo: 'capibara.png' },
-
-		{ nombre: 'Gato', archivo: 'gato.png' },
-		{ nombre: 'Perro', archivo: 'perro.png' },
-		{ nombre: 'Capibara', archivo: 'capibara.png' },
-		{ nombre: 'Gato', archivo: 'gato.png' },
-		{ nombre: 'Perro', archivo: 'perro.png' },
-		{ nombre: 'Capibara', archivo: 'capibara.png' },
 	],
     anime: [
         // Agrega aquí tus imágenes de anime cuando las tengas
     ],
     futbol: [
         // Agrega aquí tus imágenes de fútbol cuando las tengas
+    ],
+    Paisaje: [
+        
     ]
 }
 
@@ -547,6 +676,7 @@ function mostrarCategoria(categoria) {
             imagenesGrid.querySelectorAll('.imagenOpt').forEach(o => o.classList.remove('selected'))
             div.classList.add('selected')
             personaje = div.dataset.personaje
+            actualizarPreview()
         })
         imagenesGrid.appendChild(div)
     })
@@ -624,6 +754,7 @@ function renderizarCustomGrid(imagenes) {
             customGrid.querySelectorAll('.customItem').forEach(i => i.classList.remove('selected'))
             div.classList.add('selected')
             personaje = img.ruta
+            actualizarPreview()
         })
 
         // Elimina la imagen al hacer clic en la X
@@ -737,6 +868,7 @@ async function buscarGif(query){
 				img.classList.add('selected');
 				// Guarda la URL del gif como personaje
 				personaje = gif.images.original.url;
+				actualizarPreview()
 			});
 
 			gifGrid.appendChild(img);
@@ -891,6 +1023,9 @@ function mostrarLogrado() {
 async function inicializar() {
 	//Pide la config guardada a main.js a traves del preload
 	const config = await window.api.cargarConfig()
+
+    calcularTotal()
+    activarPreviewEscritorio()
 
 	//Aplica los valores guardados a las variables globales
 	concentracion = config.concentracion

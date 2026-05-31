@@ -92,15 +92,15 @@ window.api.recibirDatosDescanso((datos) => {
         // Posición en 9 zonas para el texto
         if (config.textPosition) {
             const posicionesTexto = {
-                'top-left':      { top: '20px',  left: '20px',  right: 'auto', bottom: 'auto', transform: 'none' },
-                'top-center':    { top: '20px',  left: '50%',   right: 'auto', bottom: 'auto', transform: 'translateX(-50%)' },
-                'top-right':     { top: '20px',  left: 'auto',  right: '20px', bottom: 'auto', transform: 'none' },
-                'middle-left':   { top: '50%',   left: '20px',  right: 'auto', bottom: 'auto', transform: 'translateY(-50%)' },
-                'middle-center': { top: '50%',   left: '50%',   right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' },
-                'middle-right':  { top: '50%',   left: 'auto',  right: '20px', bottom: 'auto', transform: 'translateY(-50%)' },
-                'bottom-left':   { top: 'auto',  left: '20px',  right: 'auto', bottom: '20px', transform: 'none' },
-                'bottom-center': { top: 'auto',  left: '50%',   right: 'auto', bottom: '20px', transform: 'translateX(-50%)' },
-                'bottom-right':  { top: 'auto',  left: 'auto',  right: '20px', bottom: '20px', transform: 'none' }
+                'top-left':      { top: '2%',  left: '1%',  right: 'auto', bottom: 'auto', transform: 'none' },
+                'top-center':    { top: '2%',  left: '50%', right: 'auto', bottom: 'auto', transform: 'translateX(-50%)' },
+                'top-right':     { top: '2%',  left: 'auto',right: '1%',  bottom: 'auto', transform: 'none' },
+                'middle-left':   { top: '50%', left: '1%',  right: 'auto', bottom: 'auto', transform: 'translateY(-50%)' },
+                'middle-center': { top: '50%', left: '50%', right: 'auto', bottom: 'auto', transform: 'translate(-50%, -50%)' },
+                'middle-right':  { top: '50%', left: 'auto',right: '1%',  bottom: 'auto', transform: 'translateY(-50%)' },
+                'bottom-left':   { top: 'auto',left: '1%',  right: 'auto', bottom: '2%',  transform: 'none' },
+                'bottom-center': { top: 'auto',left: '50%', right: 'auto', bottom: '2%',  transform: 'translateX(-50%)' },
+                'bottom-right':  { top: 'auto',left: 'auto',right: '1%',  bottom: '2%',  transform: 'none' }
             }
             const posTxt = posicionesTexto[config.textPosition] || posicionesTexto['top-center']
             

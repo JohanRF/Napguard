@@ -1,5 +1,5 @@
 //? PRELOAD.JS - Puente entre main.js y las vistas
-const { contextBridge, ipcRenderer } = require("electron")
+const { contextBridge, ipcRenderer, desktopCapturer } = require("electron")
 
 //* Crea un objeto llamado 'api' accesible desde timer.js como window.api
 contextBridge.exposeInMainWorld('api', {
@@ -40,4 +40,10 @@ contextBridge.exposeInMainWorld('api', {
 
 	// Descarga una fuente de Google Fonts para uso offline
 	descargarFuente: (nombreFuente) => ipcRenderer.invoke('descargar-fuente', nombreFuente),
+
+	// Obtiene las fuentes de pantalla disponibles para el preview
+	obtenerFuentesPantalla: () => desktopCapturer.getSources({ 
+		types: ['screen'],
+		thumbnailSize: { width: 1280, height: 720 }
+	}),
 })

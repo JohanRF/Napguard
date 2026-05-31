@@ -1,5 +1,5 @@
 //* Importo las herramientas app y BrowserWindow de Electron
-const {app, BrowserWindow, ipcMain, Notification} = require('electron')
+const {app, BrowserWindow, ipcMain, Notification, desktopCapturer, session} = require('electron')
 //* Importo path para contruir rutas de archivos.
 const path = require('path')
 //* Permite leer y escribir archivos en el disco
@@ -46,12 +46,21 @@ function createWindow() {
 		resizable: false,
 		webPreferences: {
 			//* Conecto el puente entre main.js y el HTML
-			preload: path.join(__dirname, 'preload.js')
+			preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true,
+            nodeIntegration: false,
 		}
 	})
 
-	//* Le digo a la ventana que HTML debe mostrar
+	// Le digo a la ventana que HTML debe mostrar
 	mainWin.loadFile('src/windows/timer.html');
+
+    // Permisos para captura de pantalla (Electron v19+)
+    session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
+        desktopCapturer.getSources({ types: ['screen'] }).then((sources) => {
+            callback({ video: sources[0] })
+        })
+    });
 
 	//Permite cargar recursos externos como FontAwesome y recursos locales (file:, data:)
 	mainWin.webContents.session.webRequest.onHeadersReceived((details, callback)=> {

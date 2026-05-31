@@ -27,14 +27,27 @@
 			</button>
 		</div>
 
-		<!-- ? Cuerpo del settings -->
-		<!-- Total calculado -->
-        <div class="totalBox">
-            <p class="totalLabel">SESIÓN TOTAL</p>
-            <p class="totalVal" id="totalSesion">2h 20min (140 min)</p>
-        </div>
-		
 		<div class="settingsBody">
+			<!-- ? Cuerpo del settings -->
+			
+			<!-- PREVIEW DEL BLOCKER -->
+			<div class="previewBlocker" id="previewBlocker">
+				
+				<div class="previewHeader">
+					<span><i class="fa-solid fa-eye"></i> VISTA PREVIA</span>
+				</div>
+				<div class="previewCanvas" id="previewCanvas">
+					<video id="previewEscritorio" autoplay muted playsinline></video>
+					<div class="previewTiempo" id="previewTiempo">00:00</div>
+					<img id="previewImg" class="previewImg" src="../assets/images/prado.webp" alt="preview">
+				</div>
+			</div>
+
+			<!-- Total calculado -->
+			<div class="totalBox">
+				<p class="totalLabel">SESIÓN TOTAL</p>
+				<p class="totalVal" id="totalSesion">2h 20min (140 min)</p>
+			</div>
 
 			<!-- Seccion tiempos -->
 			<p class="sectionTitle">// TIEMPOS //</p>
