@@ -1022,10 +1022,15 @@ input[type="range"]::-webkit-slider-thumb {
 
 .movimientoOpt.selected {
     border-color: var(--acento);
+    background: var(--acento);
 }
 
 .movimientoOpt.selected i {
-    color: var(--acento);
+    color: #fff;
+}
+
+.movimientoOpt.selected span {
+    color: #fff;
 }
 
 /* ==============================
@@ -1099,10 +1104,25 @@ input[type="range"]::-webkit-slider-thumb {
 
 .movimientoTipo.selected {
     border-color: var(--acento);
+    background: var(--acento);
 }
 
 .movimientoTipo.selected i {
-    color: var(--acento);
+    color: #fff;
+}
+
+.movimientoTipo.selected span {
+    color: #fff;
+}
+
+/* Sección desactivada — cuando hay movimiento activo */
+#seccionPosicion {
+    transition: opacity 0.2s;
+}
+
+#seccionPosicion.desactivado {
+    opacity: 0.3;
+    pointer-events: none;
 }
 
 /* ==============================

@@ -1,7 +1,7 @@
 {
-  "concentracion": 1,
-  "descanso": 1,
-  "ciclosTotales": 1,
+  "concentracion": 25,
+  "descanso": 5,
+  "ciclosTotales": 2,
   "personaje": "capibara",
   "modoOscuro": false
 }

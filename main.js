@@ -19,9 +19,9 @@ const rutaConfig = path.join(
 
 //? Configuracion por defecto si no existe archivo guardado
 const configPorDefecto = {
-	concentracion: 30,
+	concentracion: 25,
 	descanso: 5,
-	ciclosTotales: 4,
+	ciclosTotales: 2,
 	personaje: 'gato',
 	modoOscuro: false
 }
@@ -151,8 +151,9 @@ ipcMain.handle('cargar-config', () =>{
 	try{
 		//Intenta leer el archivo guardado
 		const datos = fs.readFileSync(rutaConfig, 'utf-8')
-		//Convierte el texto JSON a objeto JS y lo devuelve
-		return JSON.parse(datos)
+		const guardado = JSON.parse(datos)
+		// Merge: usa el valor guardado si existe, si no usa el por defecto
+		return { ...configPorDefecto, ...guardado }
 	}catch{
 		//Si no existe el archivo devuelve la configuracion por defecto
 		return configPorDefecto

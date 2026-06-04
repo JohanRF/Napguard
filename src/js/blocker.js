@@ -46,11 +46,16 @@ window.api.recibirDatosDescanso((datos) => {
             animalImg.style.objectFit = 'contain'
         }else{
             // Posición en una de las 9 zonas
+            const porcentajes = { grande: '50vw', mediano: '35vw', pequeno: '20vw' }
+            const tamano = porcentajes[config.tamanoImagen] || '35vw'
+
             contenedor.style.position = 'fixed'
             contenedor.style.width = 'auto'
             contenedor.style.height = 'auto'
-            animalImg.style.width = '420px'
-            animalImg.style.height = '420px'
+            animalImg.style.maxWidth = tamano
+            animalImg.style.maxHeight = tamano
+            animalImg.style.width = 'auto'
+            animalImg.style.height = 'auto'
             animalImg.style.objectFit = 'contain'
 
             // Mapea la posición elegida a coordenadas CSS
@@ -133,17 +138,16 @@ window.api.recibirDatosDescanso((datos) => {
     
     // Detecta el tipo de personaje y asigna la ruta correcta
     if (!datos.personaje) {
-        // Sin selección — usa el gato por defecto
-        animalImg.src = `../assets/images/gato.png`
+        animalImg.src = `../assets/images/animales/gato.png`
     } else if (datos.personaje.startsWith('http')) {
         // Es una URL de Giphy — la usa directamente
         animalImg.src = datos.personaje
-    } else if (datos.personaje.includes('\\') || datos.personaje.includes('/')) {
-        // Es una ruta local de Custom
-        animalImg.src = datos.personaje
+    } else if (datos.personaje.includes(':\\') || datos.personaje.includes('AppData')) {
+        // Es una ruta absoluta local de Custom — necesita protocolo file:///
+        animalImg.src = 'file:///' + datos.personaje.replace(/\\/g, '/')
     } else {
-        // Es un nombre de imagen de categoría
-        animalImg.src = `../assets/images/${datos.personaje}.png`
+        // Es un nombre/ruta relativa de imagen de assets (ej: 'animales/gato.png')
+        animalImg.src = `../assets/images/${datos.personaje}`
     }
 
     // Inicia el contador regresivo con el tiempo de descanso
@@ -210,7 +214,7 @@ window.api.recibirDatosDescanso((datos) => {
             contenedor.style.left = posX + 'px'
 
             //Voltea la imagen segun la dirección actual
-            animalImg.style.transform = direccion > 0 ? 'scaleX(1)' : 'scaleX(-1)'
+            animalImg.style.transform = direccion > 0 ? 'scaleX(-1)' : 'scaleX(1)'
         }, 16) // 60fps aproximado
     }
 })

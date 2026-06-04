@@ -1,6 +1,6 @@
 {
   "name": "napguard",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "App de concentración con timer Pomodoro",
   "main": "main.js",
   "author": "Johan Rivera",

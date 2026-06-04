@@ -294,8 +294,10 @@ btnOpciones.addEventListener('click', ()=>{
 	// Muestra mini opciones de mov solo si el movimiento no es 'ninguno
 	if (configBlocker.movimiento !== 'ninguno') {
 		movimientoOpciones.classList.remove('oculto');
+		document.getElementById('seccionPosicion').classList.add('desactivado')
 	}else{
 		movimientoOpciones.classList.add('oculto');
+		document.getElementById('seccionPosicion').classList.remove('desactivado')
 	}
 
 	document.querySelectorAll('.movimientoTIpo').forEach(t =>{
@@ -362,12 +364,16 @@ document.querySelectorAll('.movimientoOpt').forEach(opt => {
         document.querySelectorAll('.movimientoOpt').forEach(o => o.classList.remove('selected'))
         opt.classList.add('selected')
 
-		//Si elige Ninguno oculta las mini opciones
-		//Si elige cualquier otro las muestra
+        const seccionPosicion = document.getElementById('seccionPosicion')
+
+		//Si elige Ninguno oculta las mini opciones y reactiva posición
 		if (opt.dataset.mov === 'ninguno') {
 			movimientoOpciones.classList.add('oculto')
-		}else{
+            seccionPosicion.classList.remove('desactivado')
+		} else {
+            // Muestra mini opciones y desactiva posición
 			movimientoOpciones.classList.remove('oculto')
+            seccionPosicion.classList.add('desactivado')
 		}
     })
 })
@@ -464,6 +470,9 @@ btnVolverConfig.addEventListener('click', () => {
 const previewCanvas = document.getElementById('previewCanvas')
 const previewImg = document.getElementById('previewImg')
 
+// Intervalo de animación del preview
+let animPreview = null
+
 // Actualiza el preview con los valores actuales de los controles
 function actualizarPreview() {
     // Actualiza el tiempo de descanso real configurado
@@ -521,16 +530,18 @@ function actualizarPreview() {
     previewImg.style.transform = coords.transform
 
     // Aplica imagen del personaje seleccionado
-    if (personaje) {
-        if (personaje.startsWith('http')) {
-            previewImg.src = personaje
-        } else if (personaje.includes('\\') || personaje.includes('/')) {
-            previewImg.src = personaje
-        } else {
-            previewImg.src = `../assets/images/${personaje}.png`
-        }
+    if (!personaje) {
+        // Sin selección — muestra el gato por defecto
+        previewImg.src = '../assets/images/animales/gato.png'
+    } else if (personaje.startsWith('http')) {
+        // Es una URL de Giphy
+        previewImg.src = personaje
+    } else if (personaje.includes(':\\') || personaje.includes('AppData')) {
+        // Es una ruta absoluta local de Custom
+        previewImg.src = personaje
     } else {
-        previewImg.src = '../assets/images/prado.webp'
+        // Es un nombre/ruta relativa de assets (ej: 'animales/gato.png')
+        previewImg.src = `../assets/images/${personaje}`
     }
 
     // Aplica estilos del texto al previewTiempo
@@ -562,6 +573,45 @@ function actualizarPreview() {
         tiempoPreview.style.bottom    = tCoords.bottom
         tiempoPreview.style.transform = tCoords.transform
     }
+
+    // Limpia animación anterior si existía
+    if (animPreview) {
+        clearInterval(animPreview)
+        animPreview = null
+    }
+
+    // Animación de movimiento en el preview
+    if (configBlocker.movimiento !== 'ninguno') {
+        const canvasAncho = previewCanvas.offsetWidth
+        const imgAncho = previewImg.offsetWidth || 80
+        const velocidad = (configBlocker.velocidad || 5) * 0.5
+        let posX = configBlocker.movimiento === 'ltr' ? -imgAncho : canvasAncho
+        let direccion = configBlocker.movimiento === 'ltr' ? 1 : -1
+
+        // Posición estática desactivada — la animación controla left
+        previewImg.style.top = '50%'
+        previewImg.style.left = posX + 'px'
+        previewImg.style.right = 'auto'
+        previewImg.style.bottom = 'auto'
+        previewImg.style.transform = 'translateY(-50%)'
+
+        animPreview = setInterval(() => {
+            posX += velocidad * direccion
+
+            if (configBlocker.tipoMovimiento === 'atravesar') {
+                if (posX > canvasAncho) posX = -imgAncho
+                if (posX < -imgAncho) posX = canvasAncho
+            } else {
+                if (posX + imgAncho >= canvasAncho) { posX = canvasAncho - imgAncho; direccion = -1 }
+                if (posX <= 0) { posX = 0; direccion = 1 }
+            }
+
+            previewImg.style.left = posX + 'px'
+            previewImg.style.transform = direccion > 0
+                ? 'translateY(-50%) scaleX(-1)'
+                : 'translateY(-50%) scaleX(1)'
+        }, 16)
+    }
 }
 
 async function activarPreviewEscritorio() {
@@ -580,8 +630,22 @@ async function activarPreviewEscritorio() {
     }
 }
 
+// Debounce para no disparar animación en cada píxel del slider
+let debouncePreview = null
+function actualizarPreviewDebounced() {
+    // Actualiza el tiempo inmediatamente (sin lag)
+    const tiempoPreview = document.getElementById('previewTiempo')
+    if (tiempoPreview) {
+        const minutos = String(descanso).padStart(2, '0')
+        tiempoPreview.textContent = `${minutos}:00`
+    }
+    // La animación espera a que el usuario suelte el slider
+    clearTimeout(debouncePreview)
+    debouncePreview = setTimeout(actualizarPreview, 150)
+}
+
 // Preview en vivo desde Settings — cuando cambia el descanso
-sliderDescanso.addEventListener('input', actualizarPreview)
+sliderDescanso.addEventListener('input', actualizarPreviewDebounced)
 
 // Preview en vivo desde Config — cuando cambia cualquier opción
 colorFondo.addEventListener('input', actualizarPreview)
@@ -611,15 +675,28 @@ const btnAgregarCustom = document.getElementById('btnAgregarCustom');
 //* Imágenes por categoría — aquí defines las que tienes
 const imagenesPorCategoria = {
     animales: [
-		{ nombre: 'Gato', archivo: 'gato.png' },
-		{ nombre: 'Perro', archivo: 'perro.png' },
-		{ nombre: 'Capibara', archivo: 'capibara.png' },
+		{ nombre: 'Gato',     archivo: 'animales/gato.png' },
+        { nombre: 'Perro',    archivo: 'animales/perro.png' },
+        { nombre: 'Capibara', archivo: 'animales/capibara.png' },
+        { nombre: 'Conejo',   archivo: 'animales/conejo.png' },
+        { nombre: 'Pato',   archivo: 'animales/pato.png' },
+        { nombre: 'Castor',   archivo: 'animales/castor.png' },
 	],
     anime: [
-        // Agrega aquí tus imágenes de anime cuando las tengas
+        { nombre: 'Goku',   archivo: 'anime/goku.webp' },
+        { nombre: 'Luffy',   archivo: 'anime/luffy.webp' },
+        { nombre: 'Naruto',   archivo: 'anime/naruto.webp' },
+        { nombre: 'Itadori',   archivo: 'anime/itadori.webp' },
+        { nombre: 'Izuku',   archivo: 'anime/izuku.png' },
+        { nombre: 'Ichigo',   archivo: 'anime/ichigo.webp' },
     ],
     futbol: [
-        // Agrega aquí tus imágenes de fútbol cuando las tengas
+        { nombre: 'Messi',   archivo: 'anime/messi.png' },
+        { nombre: 'Cristiano',   archivo: 'anime/cristiano.png' },
+        { nombre: 'NeymarJr',   archivo: 'anime/neymarJr.png' },
+        { nombre: 'Maradona',   archivo: 'anime/maradona.png' },
+        { nombre: 'Pele',   archivo: 'anime/pele.webp' },
+        { nombre: 'Johan',   archivo: 'anime/johan.webp' },
     ],
     Paisaje: [
         
@@ -646,6 +723,9 @@ tabCustom.addEventListener('click', () => cambiarTab(tabCustom, panelCustom))
 function mostrarCategoria(categoria) {
     const imagenes = imagenesPorCategoria[categoria] || []
 
+    console.log('Categoría recibida:', categoria)
+    console.log('Imágenes encontradas:', imagenes)
+
     // Limpia el grid
     imagenesGrid.innerHTML = ''
 
@@ -662,13 +742,13 @@ function mostrarCategoria(categoria) {
     imagenes.forEach(img => {
         const div = document.createElement('div')
         div.classList.add('imagenOpt')
-        div.dataset.personaje = img.archivo.replace('.png', '')
+        div.dataset.personaje = img.archivo
         div.innerHTML = `
             <img src="../assets/images/${img.archivo}" alt="${img.nombre}">
             <span>${img.nombre}</span>
         `
         // Marca como seleccionada si es la activa
-        if (personaje === img.archivo.replace('.png', '')) {
+        if (personaje === img.archivo) {
             div.classList.add('selected')
         }
         // Al hacer clic selecciona el personaje
@@ -1024,9 +1104,6 @@ async function inicializar() {
 	//Pide la config guardada a main.js a traves del preload
 	const config = await window.api.cargarConfig()
 
-    calcularTotal()
-    activarPreviewEscritorio()
-
 	//Aplica los valores guardados a las variables globales
 	concentracion = config.concentracion
 	descanso = config.descanso
@@ -1059,6 +1136,7 @@ async function inicializar() {
 
 	//Calcula el total con los valores cargados
 	calcularTotal()
+	activarPreviewEscritorio()
 }
 
 //* Cuando completa todos los ciclos vuelve a la vista settings

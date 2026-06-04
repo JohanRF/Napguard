@@ -39,7 +39,7 @@
 				<div class="previewCanvas" id="previewCanvas">
 					<video id="previewEscritorio" autoplay muted playsinline></video>
 					<div class="previewTiempo" id="previewTiempo">00:00</div>
-					<img id="previewImg" class="previewImg" src="../assets/images/prado.webp" alt="preview">
+					<img id="previewImg" class="previewImg" src="../assets/images/animales/gato.png" alt="preview">
 				</div>
 			</div>
 
@@ -55,9 +55,9 @@
 			<div class="paramBlock">
 				<div class="paramRow">
 					<span class="paramName">CONCENTRACIÓN</span>
-					<input type="number" class="paramVal" id="valConcentracion" value="30" min="1" max="120">
+					<input type="number" class="paramVal" id="valConcentracion" value="25" min="1" max="120">
 				</div>
-				<input type="range" id="sliderConcentracion" min="1" max="120" value="30" step="1">
+				<input type="range" id="sliderConcentracion" min="1" max="120" value="25" step="1">
 			</div>
 
 			<div class="paramBlock">
@@ -71,9 +71,9 @@
 			<div class="paramBlock">
                 <div class="paramRow">
                     <span class="paramName">CICLOS</span>
-                    <input type="number" class="paramVal" id="valCiclos" value="4" min="1" max="10">
+                    <input type="number" class="paramVal" id="valCiclos" value="2" min="1" max="10">
                 </div>
-                <input type="range" id="sliderCiclos" min="1" max="10" value="4" step="1">
+                <input type="range" id="sliderCiclos" min="1" max="10" value="2" step="1">
             </div>
 
 			<!-- Diseño de descanso -->
@@ -226,26 +226,28 @@
 				</div>
 
 				<!-- SECCIÓN 2: Posición -->
-				<p class="sectionTitle">// POSICIÓN //</p>
+				<div id="seccionPosicion">
+					<p class="sectionTitle">// POSICIÓN //</p>
 
-				<div class="posicionGrid" id="posicionGrid">
-					<div class="posicionZona" data-pos="top-left"></div>
-					<div class="posicionZona" data-pos="top-center"></div>
-					<div class="posicionZona" data-pos="top-right"></div>
-					<div class="posicionZona" data-pos="middle-left"></div>
-					<div class="posicionZona" data-pos="middle-center"></div>
-					<div class="posicionZona" data-pos="middle-right"></div>
-					<div class="posicionZona" data-pos="bottom-left"></div>
-					<div class="posicionZona" data-pos="bottom-center"></div>
-					<div class="posicionZona" data-pos="bottom-right"></div>
-				</div>
+					<div class="posicionGrid" id="posicionGrid">
+						<div class="posicionZona" data-pos="top-left"></div>
+						<div class="posicionZona" data-pos="top-center"></div>
+						<div class="posicionZona" data-pos="top-right"></div>
+						<div class="posicionZona" data-pos="middle-left"></div>
+						<div class="posicionZona" data-pos="middle-center"></div>
+						<div class="posicionZona" data-pos="middle-right"></div>
+						<div class="posicionZona" data-pos="bottom-left"></div>
+						<div class="posicionZona" data-pos="bottom-center"></div>
+						<div class="posicionZona" data-pos="bottom-right"></div>
+					</div>
 
-				<!-- Opción pantalla completa -->
-				<div class="configOpt" id="optPantallaCompleta">
-					<i class="fa-solid fa-expand"></i>
-					<span>Pantalla completa</span>
-					<div class="toggleSwitch" id="togglePantallaCompleta">
-						<div class="toggleThumb"></div>
+					<!-- Opción pantalla completa -->
+					<div class="configOpt" id="optPantallaCompleta">
+						<i class="fa-solid fa-expand"></i>
+						<span>Pantalla completa</span>
+						<div class="toggleSwitch" id="togglePantallaCompleta">
+							<div class="toggleThumb"></div>
+						</div>
 					</div>
 				</div>
 
