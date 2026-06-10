@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>NapGuard — Tu Guardián del Descanso Productivo</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css">
+	<script src="https://kit.fontawesome.com/4e26a4ebf9.js" crossorigin="anonymous"></script>
+</head>
+<body class="light">
+
+	<!-- NAVBAR -->
+	<nav class="navbar">
+		<span class="logo retro">Nap<span class="accent">Guard</span></span>
+		<div class="navControls">
+			<button id="btnTema" title="Cambiar tema">
+				<i id="iconoTema" class="fa-regular fa-moon"></i>
+			</button>
+			<a href="https://github.com/JohanRF/Napguard/releases/latest/download/NapGuard.Setup.1.0.7.exe" class="btnDescargar">
+                <i class="fa-solid fa-download"></i> Descargar
+            </a>
+		</div>
+	</nav>
+
+	<!-- HERO -->
+	<section class="hero">
+		<div class="heroBadge retro">Windows — Gratis — Open Source</div>
+		<h1>Tu guardián del <span class="accent">descanso</span> productivo</h1>
+		<p>App de concentración estilo Pomodoro que bloquea tu escritorio durante el descanso. Sin distracciones. Sin excusas.</p>
+		<div class="btnGroup">
+			<a href="https://github.com/JohanRF/Napguard/releases/latest/download/NapGuard.Setup.1.0.7.exe" class="btnPrimary">
+                <i class="fa-solid fa-download"></i> Descargar para Windows
+            </a>
+			<a href="https://github.com/JohanRF/Napguard" target="_blank" class="btnSecondary">
+				<i class="fa-brands fa-github"></i> Ver en GitHub
+			</a>
+		</div>
+	</section>
+
+	<!-- CAPTURAS -->
+	<section class="capturas">
+
+		<!-- Pantalla 1: Configuración -->
+		<div class="capturaCard">
+			<img src="img/settings.png" alt="Vista de configuración de NapGuard">
+			<p class="capturaLabel retro">Configura tu sesión</p>
+		</div>
+
+		<!-- Pantalla 2: Personaliza el blocker -->
+		<div class="capturaCard">
+			<div class="configBlockerPlaceholder">
+				<span class="cbLabel">Config</span>
+				<div class="cbTabs">
+					<div class="cbTab active">Fondo</div>
+					<div class="cbTab">Texto</div>
+				</div>
+				<span class="cbLabel" style="margin-top:4px">POSICIÓN</span>
+				<div class="cbGrid">
+					<div class="cbCell"></div>
+					<div class="cbCell"></div>
+					<div class="cbCell"></div>
+					<div class="cbCell"></div>
+					<div class="cbCell sel"></div>
+					<div class="cbCell"></div>
+					<div class="cbCell"></div>
+					<div class="cbCell"></div>
+					<div class="cbCell"></div>
+				</div>
+				<div class="cbBottom"></div>
+			</div>
+			<p class="capturaLabel retro">Personaliza el blocker</p>
+		</div>
+
+		<!-- Pantalla 3: Modo descanso -->
+		<div class="capturaCard">
+			<div class="blockerPlaceholder">
+				<div class="blockerTimer">05:00</div>
+				<span class="blockerLabel">MODO DESCANSO</span>
+			</div>
+			<p class="capturaLabel retro">Modo descanso</p>
+		</div>
+
+	</section>
+
+	<div class="divider"></div>
+
+	<!-- FEATURES -->
+	<section class="features">
+		<span class="sectionLabel retro">// FEATURES //</span>
+		<h2>Todo lo que necesitas para concentrarte</h2>
+
+		<div class="featGrid">
+
+			<div class="featCard">
+				<i class="fa-solid fa-lock"></i>
+				<h3>Bloqueo total</h3>
+				<p>Durante el descanso bloquea todo el escritorio — apps, navegador y juegos.</p>
+			</div>
+
+			<div class="featCard">
+				<i class="fa-solid fa-sliders"></i>
+				<h3>Configurable</h3>
+				<p>Tiempo de concentración, descanso y ciclos totalmente a tu gusto.</p>
+			</div>
+
+			<div class="featCard">
+				<i class="fa-solid fa-film"></i>
+				<h3>GIF / Sticker</h3>
+				<p>Busca y elige cualquier GIF o sticker via Giphy para tu pantalla de descanso.</p>
+			</div>
+
+			<div class="featCard">
+				<i class="fa-solid fa-image"></i>
+				<h3>Custom</h3>
+				<p>Sube tus propias imágenes, GIFs o stickers favoritos como fondo de descanso.</p>
+			</div>
+
+			<div class="featCard">
+				<i class="fa-solid fa-paintbrush"></i>
+				<h3>Diseña el blocker</h3>
+				<p>Personaliza color, difuminado, tamaño, posición y movimiento del blocker.</p>
+			</div>
+
+			<div class="featCard">
+				<i class="fa-solid fa-bell"></i>
+				<h3>Notificaciones</h3>
+				<p>Aviso del sistema al completar todos tus ciclos de concentración.</p>
+			</div>
+
+		</div>
+	</section>
+
+	<!-- DOWNLOAD -->
+	<section class="downloadSection">
+		<h2>Descarga NapGuard gratis</h2>
+		<p>Solo para Windows. Sin cuenta. Sin suscripción.</p>
+        <a href="https://github.com/JohanRF/Napguard/releases/latest/download/NapGuard.Setup.1.0.7.exe" class="btnPrimary">
+            <i class="fa-solid fa-download"></i> Descargar NapGuard v1.0.7
+        </a>
+		<p class="warningNote">
+            <i class="fa-solid fa-circle-info"></i>
+            Windows puede pedir confirmación al abrir el instalador por primera vez.
+            Es normal en apps sin firma digital — solo haz clic en
+            <strong>"Más información"</strong> → <strong>"Ejecutar de todas formas"</strong>.
+        </p>
+	</section>
+
+	<!-- FOOTER -->
+	<footer class="footer">
+		<span>Hecho por <a href="https://github.com/JohanRF" target="_blank">JohanRF</a></span>
+		<span>·</span>
+		<a href="https://github.com/JohanRF/Napguard" target="_blank">GitHub</a>
+		<span>·</span>
+		<span>NapGuard v1.0.7</span>
+	</footer>
+
+	<script src="script.js"></script>
+</body>
+</html>
