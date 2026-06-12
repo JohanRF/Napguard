@@ -29,7 +29,7 @@ window.api.recibirDatosDescanso((datos) => {
         const b = parseInt(hex.substring(4, 6), 16)
 
         // Convierte el porcentaje de difuminado a valor de opacidad 0-1
-        const opacidad = (100 - config.difuminado) / 100;
+        const opacidad = config.difuminado / 100;
 
         // Aplica el color con la opacidad al fondo del body
         document.body.style.background = `rgba(${r}, ${g}, ${b}, ${opacidad})`;

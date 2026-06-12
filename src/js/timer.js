@@ -691,12 +691,12 @@ const imagenesPorCategoria = {
         { nombre: 'Ichigo',   archivo: 'anime/ichigo.webp' },
     ],
     futbol: [
-        { nombre: 'Messi',   archivo: 'anime/messi.png' },
-        { nombre: 'Cristiano',   archivo: 'anime/cristiano.png' },
-        { nombre: 'NeymarJr',   archivo: 'anime/neymarJr.png' },
-        { nombre: 'Maradona',   archivo: 'anime/maradona.png' },
-        { nombre: 'Pele',   archivo: 'anime/pele.webp' },
-        { nombre: 'Johan',   archivo: 'anime/johan.webp' },
+        { nombre: 'Messi',   archivo: 'futbol/messi.png' },
+        { nombre: 'Cristiano',   archivo: 'futbol/cristiano.png' },
+        { nombre: 'NeymarJr',   archivo: 'futbol/neymarJr.png' },
+        { nombre: 'Maradona',   archivo: 'futbol/maradona.png' },
+        { nombre: 'Pele',   archivo: 'futbol/pele.webp' },
+        { nombre: 'Johan',   archivo: 'futbol/johan.webp' },
     ],
     Paisaje: [
         
